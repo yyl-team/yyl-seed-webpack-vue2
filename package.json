@@ -1,0 +1,37 @@
+{
+  "name": "yyl-seed-webpack-vue2",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest",
+    "all": "node ./test/run.js all --config ./test/demo/main/config.js",
+    "all-isCommit": "node ./test/run.js all --config ./test/demo/main/config.js --isCommit",
+    "watch": "node ./test/run.js watch --config ./test/demo/main/config.js",
+    "watch-isCommit": "node ./test/run.js watch --config ./test/demo/main/config.js --isCommit",
+    "init": "node ./test/run.js init --path ./test/__frag",
+    "examples": "node ./test/run.js examples",
+    "make-page": "node ./test/run.js make --config ./test/demo/main/config.js --name p-maketest",
+    "make-widget": "node ./test/run.js make --config ./test/demo/main/config.js --name w-maketest",
+    "make-layout": "node ./test/run.js make --config ./test/demo/main/config.js --name w-layout"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackness1208/yyl-seed-webpack-vue2.git"
+  },
+  "author": "jackness",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jackness1208/yyl-seed-webpack-vue2/issues"
+  },
+  "homepage": "https://github.com/jackness1208/yyl-seed-webpack-vue2#readme",
+  "dependencies": {
+    "yyl-fs": "^0.1.1",
+    "yyl-seed-response": "^0.1.0",
+    "yyl-util": "^1.14.4"
+  }
+}
