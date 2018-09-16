@@ -7,7 +7,7 @@ const http = require('http');
 
 const seed = require('../index.js');
 
-jest.setTimeout(10000);
+jest.setTimeout(30000);
 
 const TEST_CTRL = {
   EXAMPLES: true,
@@ -296,7 +296,64 @@ if (TEST_CTRL.INIT) {
 }
 
 if (TEST_CTRL.ALL) {
-  it('seed.all()', async () => {
-    // TODO
+  test('seed.all()', async () => {
+    await fn.frag.build();
+    await extFs.copyFiles(path.join(__dirname, './demo'), FRAG_PATH);
+
+    const configPath = path.join(FRAG_PATH, 'config.js');
+    const config = fn.parseConfig(configPath);
+
+    const opzer = seed.optimize(config, path.dirname(configPath));
+
+    await fn.frag.clearDest(config);
+
+    await fn.makeAwait((next) => {
+      const timePadding = {
+        start: 0,
+        msg: 0,
+        finished: 0
+      };
+
+      opzer.all()
+        .on('start', () => {
+          timePadding.start++;
+        })
+        .on('msg', () => {
+          timePadding.msg++;
+        })
+        .on('finished', () => {
+          timePadding.finished++;
+          // times check
+          expect(timePadding.start).toEqual(1);
+          expect(timePadding.msg).not.toEqual(0);
+          expect(timePadding.finished).toEqual(1);
+
+          linkCheck(config, () => {
+            next();
+          });
+        });
+    });
+
+    await fn.frag.clearDest(config);
+
+    await fn.makeAwait((next) => {
+      opzer.all({ remote: true })
+        .on('finished', () => {
+          linkCheck(config, () => {
+            next();
+          });
+        });
+    });
+
+    await fn.frag.clearDest(config);
+
+    await fn.makeAwait((next) => {
+      opzer.all({ isCommit: true })
+        .on('finished', () => {
+          linkCheck(config, () => {
+            next();
+          });
+        });
+    });
   });
 }

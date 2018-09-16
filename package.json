@@ -14,6 +14,7 @@
     "test": "jest",
     "all": "node ./test/run.js all --config ./test/demo/config.js",
     "all-isCommit": "node ./test/run.js all --config ./test/demo/config.js --isCommit",
+    "all-remote": "node ./test/run.js all --config ./test/demo/config.js --remote",
     "watch": "node ./test/run.js watch --config ./test/demo/config.js",
     "watch-isCommit": "node ./test/run.js watch --config ./test/demo/config.js --isCommit",
     "init": "node ./test/run.js init --path ./test/__frag",
