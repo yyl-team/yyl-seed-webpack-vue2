@@ -43,7 +43,6 @@ div
 }
 .w-demo-log {
   position: fixed;
-  z-index: 2;
   bottom: 10px;
   left: 10px;
   right: 10px;
@@ -58,7 +57,6 @@ div
 </style>
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import axios from 'axios';
 
 const cache = {};
 
@@ -79,12 +77,6 @@ export default {
     const vm = this;
     let i;
     const iClass = [0, 1, 2, 3];
-
-    axios.get('/api/mock/list/1').then((res) => {
-      vm.title = res.data.title;
-    }).catch((er) => {
-      throw new Error(er);
-    });
 
     cache.changeKey = setInterval(() => {
       const here = iClass.concat([]);

@@ -8,6 +8,7 @@ import './index.scss';
 const pageIndex = () => import(/* webpackChunkName: "pageIndex" */ '../../components/page/p-index/p-index.js');
 const pageSub = () => import(/* webpackChunkName: "pageSub" */ '../../components/page/p-sub/p-sub.js');
 
+
 Vue.use(VueRouter);
 
 const router = new VueRouter({

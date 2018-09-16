@@ -61,9 +61,8 @@ Object.assign(config, {
     // assets 输出地址
     'revDest': path.join(DEST_BASE_PATH, setting.dest.revPath),
     // tpl 输出地址
-    'tplDest': path.join(DEST_BASE_PATH, setting.dest.tplPath),
+    'tplDest': path.join(DEST_BASE_PATH, setting.dest.tplPath)
     // webpackconfig 中的 alias
-    'flexlayout': path.join('./src/js/lib/flexLayout/flexLayout-1.4.2.js')
     // + yyl make
     // - yyl make
   }

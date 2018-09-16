@@ -1,6 +1,6 @@
 <style lang="scss">
 .nav {
-  background: #444;
+  background: #333;
   display: block;
   height: 45px;
   a {

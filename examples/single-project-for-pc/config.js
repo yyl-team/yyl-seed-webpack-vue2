@@ -27,7 +27,8 @@ const COMMON_PATH = '../commons';
 // + base
 Object.assign(config, {
   localserver: setting.localserver,
-  dest: setting.dest
+  dest: setting.dest,
+  platform: 'pc'
 });
 // - base
 
@@ -64,10 +65,7 @@ Object.assign(config, {
     // tpl 输出地址
     'tplDest': path.join(DEST_BASE_PATH, setting.dest.tplPath),
     // webpackconfig 中的 alias
-    'flexlayout': path.join('./src/js/lib/flexLayout/flexLayout-1.4.2.js'),
-
-    'jquery': path.join('./src/js/lib/jquery/jquery-1.11.1.js'),
-    'babel-polyfill': path.join('./src/js/lib/babel-polyfill/babel-polyfill.js')
+    'jquery': path.join('./src/js/lib/jquery/jquery-1.11.1.js')
     // + yyl make
     // - yyl make
   }
