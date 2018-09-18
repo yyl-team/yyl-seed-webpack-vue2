@@ -13,8 +13,7 @@ const TEST_CTRL = {
   EXAMPLES: true,
   INIT: true,
   MAKE: true,
-  ALL: true,
-  WATCH: true
+  ALL: true
 };
 
 const FRAG_PATH = path.join(__dirname, '__frag');
