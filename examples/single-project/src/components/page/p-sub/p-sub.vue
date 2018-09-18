@@ -1,13 +1,23 @@
+<template lang="pug">
+div.p-sub
+  components(is="vNav")
+  components(is="vDemo")
+</template>
+<style lang="scss">
+@charset 'utf-8';
+.p-sub {
+  background: #ddd;
+  height: 100%;
+}
+</style>
+<script>
 import Vue from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 
-import tpl from './p-index.pug';
-import './p-index.scss';
 import vDemo from '../../widget/v-demo/v-demo.vue';
 import vNav from '../../widget/v-nav/v-nav.vue';
 
 export default Vue.extend({
-  template: tpl(),
   methods: {
     ...mapActions(['addDemoLog'])
   },
@@ -24,6 +34,7 @@ export default Vue.extend({
   },
   mounted() {
     const vm = this;
-    vm.addDemoLog('p-index is ready');
+    vm.addDemoLog('p-sub is ready');
   }
 });
+</script>
