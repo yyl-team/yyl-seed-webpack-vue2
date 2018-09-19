@@ -196,6 +196,38 @@ const linkCheck = function (config, next) {
   paddingCheck();
 };
 
+// 检查 assets async components
+async function checkAsyncComponent (config) {
+  const asyncPath = path.join(config.alias.jsDest, 'async_component');
+  if (fs.existsSync(asyncPath) && fs.readdirSync(asyncPath).length) {
+    const assetsPath = path.join(config.alias.revDest, 'rev-manifest.json');
+    expect(fs.existsSync(assetsPath)).toEqual(true);
+    const assetJson = util.requireJs(assetsPath);
+
+    Object.keys(assetJson).forEach((key) => {
+      const aPath = path.join(config.alias.revRoot, key);
+      const bPath = path.join(config.alias.revRoot, assetJson[key]);
+
+      console.log(fs.existsSync(aPath), aPath)
+      expect(fs.existsSync(aPath)).toEqual(true);
+      console.log(fs.existsSync(bPath), bPath)
+      expect(fs.existsSync(bPath)).toEqual(true);
+    });
+  }
+}
+
+// 检查 blank css file
+async function checkCssFiles (config) {
+  const htmlArr = await extFs.readFilePaths(config.alias.htmlDest, /\.html$/, true);
+  htmlArr.forEach((htmlPath) => {
+    const filename = path.relative(config.alias.htmlDest, htmlPath);
+    const cssFile = filename.replace(/\.html$/, '.css');
+    const cssPath = path.join(config.alias.cssDest, cssFile);
+
+    expect(fs.existsSync(cssPath)).toEqual(true);
+  });
+}
+
 if (TEST_CTRL.EXAMPLES) {
   it('seed.examples', async () => {
     expect(seed.examples.length).not.toEqual(0);
@@ -254,6 +286,7 @@ if (TEST_CTRL.INIT) {
     return new Promise(runner);
   };
 
+
   seed.examples.forEach((type) => {
     test(`seed.init ${type}`, async () => {
       await fn.frag.build();
@@ -307,6 +340,7 @@ if (TEST_CTRL.ALL) {
 
     await fn.frag.clearDest(config);
 
+    // all
     await fn.makeAwait((next) => {
       const timePadding = {
         start: 0,
@@ -334,8 +368,12 @@ if (TEST_CTRL.ALL) {
         });
     });
 
+    await checkAsyncComponent(config);
+    await checkCssFiles(config);
+
     await fn.frag.clearDest(config);
 
+    // all --remote
     await fn.makeAwait((next) => {
       opzer.all({ remote: true })
         .on('finished', () => {
@@ -345,8 +383,12 @@ if (TEST_CTRL.ALL) {
         });
     });
 
+    await checkAsyncComponent(config);
+    await checkCssFiles(config);
+
     await fn.frag.clearDest(config);
 
+    // all --isCommit
     await fn.makeAwait((next) => {
       opzer.all({ isCommit: true })
         .on('finished', () => {
@@ -355,5 +397,10 @@ if (TEST_CTRL.ALL) {
           });
         });
     });
+
+    await checkAsyncComponent(config);
+    await checkCssFiles(config);
+
+    await fn.frag.destroy();
   });
 }
