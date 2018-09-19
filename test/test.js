@@ -201,16 +201,16 @@ async function checkAsyncComponent (config) {
   if (fs.existsSync(asyncPath) && fs.readdirSync(asyncPath).length) {
     const assetsPath = path.join(config.alias.revDest, 'rev-manifest.json');
     expect(fs.existsSync(assetsPath)).toEqual(true);
-    const assetJson = util.requireJs(assetsPath);
+    const assetJson = JSON.parse(fs.readFileSync(assetsPath).toString());
 
     Object.keys(assetJson).forEach((key) => {
       const aPath = path.join(config.alias.revRoot, key);
       const bPath = path.join(config.alias.revRoot, assetJson[key]);
+      const aPathExists = fs.existsSync(aPath);
+      const bPathExists = fs.existsSync(bPath);
 
-      console.log(fs.existsSync(aPath), aPath)
-      expect(fs.existsSync(aPath)).toEqual(true);
-      console.log(fs.existsSync(bPath), bPath)
-      expect(fs.existsSync(bPath)).toEqual(true);
+      expect([aPath, aPathExists]).toEqual([aPath, true]);
+      expect([bPath, bPathExists]).toEqual([bPath, true]);
     });
   }
 }
