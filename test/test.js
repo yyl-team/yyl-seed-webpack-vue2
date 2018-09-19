@@ -13,8 +13,7 @@ const TEST_CTRL = {
   EXAMPLES: true,
   INIT: true,
   MAKE: true,
-  ALL: true,
-  WATCH: true
+  ALL: true
 };
 
 const FRAG_PATH = path.join(__dirname, '__frag');
@@ -325,6 +324,56 @@ if (TEST_CTRL.INIT) {
 
       await fn.frag.destroy();
     });
+  });
+}
+
+if (TEST_CTRL.MAKE) {
+  test('seed.make()', async () => {
+    await fn.frag.build();
+    await extFs.copyFiles(path.join(__dirname, './demo'), FRAG_PATH);
+
+    const configPath = path.join(FRAG_PATH, 'config.js');
+    const config = fn.parseConfig(configPath);
+
+    // page components
+    const pName = 'p-maketest';
+    await fn.makeAwait((next) => {
+      seed.make(pName, config)
+        .on('finished', () => {
+          next();
+        });
+    });
+
+
+    const pagePath = path.join(config.alias.srcRoot, `components/page/${pName}/${pName}.vue`);
+
+    expect(fs.existsSync(pagePath)).toEqual(true);
+
+    // widget components
+    const wName = 'w-maketest';
+    await fn.makeAwait((next) => {
+      seed.make(wName, config)
+        .on('finished', () => {
+          next();
+        });
+    });
+
+    const widgetPath = path.join(config.alias.srcRoot, `components/widget/${wName}/${wName}.vue`);
+    expect(fs.existsSync(widgetPath)).toEqual(true);
+
+    // default components
+    const dName = 'maketest';
+    await fn.makeAwait((next) => {
+      seed.make(dName, config)
+        .on('finished', () => {
+          next();
+        });
+    });
+
+    const dPath = path.join(config.alias.srcRoot, `components/widget/${dName}/${dName}.vue`);
+    expect(fs.existsSync(dPath)).toEqual(true);
+
+    await fn.frag.destroy();
   });
 }
 

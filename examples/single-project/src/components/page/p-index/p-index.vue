@@ -1,13 +1,22 @@
-import Vue from 'vue';
+<template lang="pug">
+div.p-index
+  components(is="vNav")
+  components(is="vDemo")
+</template>
+<style lang="scss">
+@charset 'utf-8';
+.p-index {
+  height: 100%;
+  background: #fff;
+}
+</style>
+<script>
 import { mapGetters, mapActions } from 'vuex';
 
-import tpl from './p-index.pug';
-import './p-index.scss';
 import vDemo from '../../widget/v-demo/v-demo.vue';
 import vNav from '../../widget/v-nav/v-nav.vue';
 
-export default Vue.extend({
-  template: tpl(),
+export default {
   methods: {
     ...mapActions(['addDemoLog'])
   },
@@ -26,4 +35,5 @@ export default Vue.extend({
     const vm = this;
     vm.addDemoLog('p-index is ready');
   }
-});
+};
+</script>

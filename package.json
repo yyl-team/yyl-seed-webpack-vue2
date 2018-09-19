@@ -20,8 +20,7 @@
     "init": "node ./test/run.js init --path ./test/__frag",
     "examples": "node ./test/run.js examples",
     "make-page": "node ./test/run.js make --config ./test/demo/config.js --name p-maketest",
-    "make-widget": "node ./test/run.js make --config ./test/demo/config.js --name w-maketest",
-    "make-layout": "node ./test/run.js make --config ./test/demo/config.js --name w-layout"
+    "make-widget": "node ./test/run.js make --config ./test/demo/config.js --name w-maketest"
   },
   "repository": {
     "type": "git",
@@ -43,7 +42,6 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "~1.6.1",
-    "babel-preset-es2015": "~6.24.1",
     "babel-preset-stage-2": "^6.24.1",
     "css-loader": "^1.0.0",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
