@@ -12,6 +12,8 @@
   },
   "scripts": {
     "test": "jest",
+    "all-example-just-webpack": "node ./test/run.js all --config ./examples/just-webpack/config.js",
+    "all-example-single-project": "node ./test/run.js all --config ./examples/single-project/config.js",
     "all": "node ./test/run.js all --config ./test/demo/config.js",
     "all-isCommit": "node ./test/run.js all --config ./test/demo/config.js --isCommit",
     "all-remote": "node ./test/run.js all --config ./test/demo/config.js --remote",
