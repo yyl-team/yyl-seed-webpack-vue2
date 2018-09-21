@@ -7,8 +7,8 @@ import VueRouter from 'vue-router';
 import store from '../../vuex/store.js';
 import './index.scss';
 
-const pageIndex = () => import(/* webpackChunkName: "pageIndex" */ '../../components/page/p-index/p-index.js');
-const pageSub = () => import(/* webpackChunkName: "pageSub" */ '../../components/page/p-sub/p-sub.js');
+const pageIndex = () => import(/* webpackChunkName: "pageIndex" */ '../../components/page/p-index/p-index.vue');
+const pageSub = () => import(/* webpackChunkName: "pageSub" */ '../../components/page/p-sub/p-sub.vue');
 
 Vue.use(VueRouter);
 
