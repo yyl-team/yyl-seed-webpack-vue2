@@ -2,6 +2,11 @@ const path = require('path');
 
 const config = {};
 
+// + vars
+const COMMON_PATH = '../commons';
+const SRC_ROOT = './src';
+// - vars
+
 // + setting
 const setting = {
   localserver: {
@@ -18,13 +23,8 @@ const setting = {
     revPath: 'assets'
   }
 };
-// - setting
-
-// + vars
 const DEST_BASE_PATH = path.join(setting.localserver.root, setting.dest.basePath);
-const COMMON_PATH = '../commons';
-const SRC_ROOT = './src';
-// - vars
+// - setting
 
 // + base
 Object.assign(config, {
