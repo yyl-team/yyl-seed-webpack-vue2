@@ -2,6 +2,11 @@ const path = require('path');
 
 const config = {};
 
+// + vars
+const COMMON_PATH = '../commons';
+const SRC_ROOT = './src';
+// - vars
+
 // + setting
 const setting = {
   localserver: {
@@ -20,12 +25,6 @@ const setting = {
 };
 // - setting
 
-// + vars
-const DEST_BASE_PATH = path.join(setting.localserver.root, setting.dest.basePath);
-const COMMON_PATH = '../commons';
-const SRC_ROOT = './src';
-// - vars
-
 // + base
 Object.assign(config, {
   localserver: setting.localserver,
@@ -34,6 +33,7 @@ Object.assign(config, {
 // - base
 
 // + alias
+const DEST_BASE_PATH = path.join(setting.localserver.root, setting.dest.basePath);
 Object.assign(config, {
   alias: {
     // 输出目录中 到 html, js, css, image 层 的路径
