@@ -1,7 +1,9 @@
 # 版本信息
+## 0.1.6 (2018-09-29)
+* [FIX] 修复 `config.resolveModule` 无效问题
+
 ## 0.1.5 (2018-09-29)
 * [ADD] 新增 `config.resolveModule` 参数用于 配置 webpack `node_modules` 位置
-
 
 ## 0.1.4 (2018-09-26)
 * [EDIT] 调整 config
