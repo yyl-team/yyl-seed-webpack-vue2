@@ -268,6 +268,12 @@ if (TEST_CTRL.INIT) {
       );
       expect(fs.existsSync(toPath)).toEqual(true);
     });
+
+    // other
+    ['.gitignore', '.editorconfig', '.eslintrc.js'].forEach((fromPath) => {
+      const toPath = util.path.join(targetPath, fromPath);
+      expect(fs.existsSync(toPath)).to.equal(true);
+    });
   };
 
   // 可以性校验
