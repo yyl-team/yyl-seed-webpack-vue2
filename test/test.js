@@ -272,7 +272,7 @@ if (TEST_CTRL.INIT) {
     // other
     ['.gitignore', '.editorconfig', '.eslintrc.js'].forEach((fromPath) => {
       const toPath = util.path.join(targetPath, fromPath);
-      expect(fs.existsSync(toPath)).to.equal(true);
+      expect(fs.existsSync(toPath)).toEqual(true);
     });
   };
 
