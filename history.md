@@ -1,4 +1,8 @@
 # 版本信息
+## 0.2.2 (2018-10-31)
+* [FIX] 修复 `config.proxy.js` 配置不正确问题
+* [ADD] 新增 `config.px2rem` 配置项
+
 ## 0.2.1 (2018-10-15)
 * [EDIT] 当传入 `env.proxy` 时， 生成出来的页面采用绝对路径
 * [FIX] 执行 `seed.init` 时自动生成 `.gitignore`
