@@ -1,4 +1,7 @@
 # 版本信息
+## 0.2.2-beta1 (2018-11-07)
+* [ADD] 新增 prerender 例子 `ssr` 但是感觉官方组件还有待完善
+
 ## 0.2.2 (2018-10-31)
 * [FIX] 修复 `config.proxy.js` 配置不正确问题
 * [ADD] 新增 `config.px2rem` 配置项
