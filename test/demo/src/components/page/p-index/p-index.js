@@ -25,5 +25,6 @@ export default Vue.extend({
   mounted() {
     const vm = this;
     vm.addDemoLog('p-index is ready');
+    vm.addDemoLog(`now in ${process.env.NODE_ENV}`)
   }
 });
