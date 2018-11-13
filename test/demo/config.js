@@ -28,7 +28,10 @@ const COMMON_PATH = '../commons';
 Object.assign(config, {
   localserver: setting.localserver,
   dest: setting.dest,
-  platform: 'pc'
+  platform: 'pc',
+  entry: {
+    'vendors': path.join(__dirname, './src/js/vendors.js')
+  }
 });
 // - base
 
