@@ -3,6 +3,10 @@ const path = require('path');
 const util = require('yyl-util');
 const extFs = require('yyl-fs');
 
+const connect = require('connect');
+const serveIndex = require('serve-index');
+const serveStatic = require('serve-static');
+
 const seed = require('../index.js');
 
 let config = {};
@@ -116,7 +120,7 @@ const runner = {
         });
     });
   },
-  watch(iEnv) {
+  async watch(iEnv) {
     let configPath;
     if (iEnv.config) {
       configPath = path.resolve(process.cwd(), iEnv.config);
@@ -131,6 +135,18 @@ const runner = {
 
     const CONFIG_DIR = path.dirname(configPath);
     const opzer = seed.optimize(config, CONFIG_DIR);
+
+    // 本地服务器
+    const app = connect();
+    app.use(serveStatic(configPath.alias.destRoot, {
+      'setHeaders': function(res) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    }));
+    app.use(serveIndex(configPath.alias.destRoot));
+
+    await opzer.initServerMiddleWare(app, iEnv);
+
 
     fn.clearDest(config).then(() => {
       opzer.watch(iEnv)

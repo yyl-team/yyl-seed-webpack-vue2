@@ -35,7 +35,6 @@
   },
   "homepage": "https://github.com/jackness1208/yyl-seed-webpack-vue2#readme",
   "dependencies": {
-    "svg-inline-loader": "^0.8.0",
     "autoprefixer": "^9.1.5",
     "axios": "^0.18.0",
     "babel-core": "~6.26.0",
@@ -62,6 +61,7 @@
     "pug-loader": "^2.4.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.0",
+    "svg-inline-loader": "^0.8.0",
     "through2": "^2.0.3",
     "uglifyjs-webpack-plugin": "^1.3.0",
     "url-loader": "^1.1.1",
@@ -74,7 +74,8 @@
     "watch": "^1.0.2",
     "webpack": "^4.19.0",
     "webpack-combine-loaders": "^2.0.4",
-    "webpack-dev-server": "^3.1.10",
+    "webpack-dev-middleware": "^3.4.0",
+    "webpack-hot-middleware": "^2.24.3",
     "webpack-merge": "^4.1.4",
     "yyl-file-replacer": "^0.3.1",
     "yyl-flexlayout": "^1.5.0",
@@ -83,6 +84,9 @@
     "yyl-util": "^1.14.4"
   },
   "devDependencies": {
-    "jest": "^23.6.0"
+    "connect": "^3.6.6",
+    "jest": "^23.6.0",
+    "serve-index": "^1.9.1",
+    "serve-static": "^1.13.2"
   }
 }
