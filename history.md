@@ -1,4 +1,7 @@
 # 版本信息
+## 0.3.1 (2018-11-18)
+* [FIX] hmr bugfix
+
 ## 0.3.0 (2018-11-18)
 * [ADD] 新增 `seed.optimize.initServerMiddleWare(app)` 方法
 * [ADD] 新增 `seed.optimize.ignoreLiveReload` 属性
