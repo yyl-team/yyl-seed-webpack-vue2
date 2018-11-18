@@ -138,14 +138,16 @@ const runner = {
 
     // 本地服务器
     const app = connect();
-    app.use(serveStatic(configPath.alias.destRoot, {
+    app.use(serveStatic(config.alias.destRoot, {
       'setHeaders': function(res) {
         res.setHeader('Cache-Control', 'no-cache');
       }
     }));
-    app.use(serveIndex(configPath.alias.destRoot));
+    app.use(serveIndex(config.alias.destRoot));
 
     await opzer.initServerMiddleWare(app, iEnv);
+
+    app.listen(5000);
 
 
     fn.clearDest(config).then(() => {

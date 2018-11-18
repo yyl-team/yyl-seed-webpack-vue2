@@ -1,4 +1,9 @@
 # 版本信息
+## 0.3.0 (2018-11-18)
+* [ADD] 新增 `seed.optimize.initServerMiddleWare(app)` 方法
+* [ADD] 新增 `seed.optimize.ignoreLiveReload` 属性
+* [ADD] `seed.optimize(iEnv).watch` 新增 `hmr` 模式
+
 ## 0.2.8 (2018-11-15)
 * [ADD] 新增 `svg-loader`
 

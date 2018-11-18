@@ -112,6 +112,24 @@ opzer.off(eventName)
 opzer.trigger(eventName, argv)
 ```
 
+### seed.initServerMiddleWare(app)
+```
+/**
+ * 配置server 中间件
+ * @param {Object} app 服务器对象
+ */
+seed.initServerMiddleWare(app)
+```
+
+### seed.ignoreLiveReload
+```
+/**
+ * 不需要系统hot reload
+ * @return {Boolean} false
+ */
+seed.ignoreLiveReload
+```
+
 ### seed.init()
 ```
 /**
