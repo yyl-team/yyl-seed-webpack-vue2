@@ -29,9 +29,12 @@ const setting = {
 // + base
 Object.assign(config, {
   localserver: setting.localserver,
-  dest: setting.dest
+  dest: setting.dest,
+  plugins: []
 });
 // - base
+
+config.plugins.push('yyl-flexlayout');
 
 // + alias
 const DEST_BASE_PATH = path.join(setting.localserver.root, setting.dest.basePath);

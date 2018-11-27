@@ -1,4 +1,7 @@
 # 版本信息
+## 0.3.4 (2018-11-27)
+* [FIX] `single-project` example 补全配置项
+
 ## 0.3.3 (2018-11-19)
 * [FIX] 调整 `--remote` 模式下配置， mode 默认为 `development`, 使用样式分离
 
