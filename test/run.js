@@ -147,7 +147,7 @@ const runner = {
 
     await opzer.initServerMiddleWare(app, iEnv);
 
-    app.listen(5000);
+    app.listen(config.localserver.port);
 
 
     fn.clearDest(config).then(() => {

@@ -6,7 +6,8 @@ const config = {};
 // + setting
 const setting = {
   localserver: {
-    root: './dist'
+    root: './dist',
+    port: 5000
   },
   dest: {
     basePath: '/pc',
