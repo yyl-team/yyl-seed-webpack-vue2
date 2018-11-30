@@ -1,4 +1,7 @@
 # 版本信息
+## 0.3.7 (2018-11-30)
+* [FIX] `webpack-hot-middleware` 中 `__webpack_hmr` 地址 改为 `${localAddress}:${port}/__webpack_hmr`
+
 ## 0.3.6 (2018-11-30)
 * [FIX] `webpack-hot-middleware` 中 `__webpack_hmr` 地址 改为 `${localAddress}:${port}/__webpack_hmr`
 
