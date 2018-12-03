@@ -1,4 +1,8 @@
 # 版本信息
+## 0.3.9 (2018-12-03)
+* [EDIT] 由于 `anyproxy` 暂时对 `event-stream` 不支持， `__webpack_hmr` 改回 `localhost:${port}/__webpack_hmr`
+* [EDIT] `opzer.initServerMiddleWare(app, iEnv, port)` 新增 `port` 参数
+
 ## 0.3.8 (2018-11-30)
 * [FIX] 去掉多余的代码
 
