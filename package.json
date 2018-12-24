@@ -11,7 +11,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jest ./test/jest/ --env=node && yyt ./test/yyt",
+    "test": "jest ./test/jest/ --env=node",
+    "ui-test": "yyt ./test/yyt",
     "all-example-just-webpack": "node ./test/runner/run.js all --config ./examples/just-webpack/config.js",
     "all-example-single-project": "node ./test/runner/run.js all --config ./examples/single-project/config.js",
     "all": "node ./test/runner/run.js all --config ./test/runner/demo/config.js --NODE_ENV production",
