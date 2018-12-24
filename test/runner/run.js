@@ -8,7 +8,7 @@ const connect = require('connect');
 const serveIndex = require('serve-index');
 const serveStatic = require('serve-static');
 
-const seed = require('../index.js');
+const seed = require('../../index.js');
 
 let config = {};
 
@@ -137,9 +137,8 @@ const runner = {
     const CONFIG_DIR = path.dirname(configPath);
     const opzer = seed.optimize(config, CONFIG_DIR);
 
-    // 本地服务器
     let app = null;
-
+    // 本地服务器
     app = connect();
     app.use(serveStatic(config.alias.destRoot, {
       'setHeaders': function(res) {
@@ -155,7 +154,9 @@ const runner = {
     fn.clearDest(config).then(() => {
       opzer.watch(iEnv)
         .on('clear', () => {
-          util.cleanScreen();
+          if (!iEnv.ignoreClear) {
+            util.cleanScreen();
+          }
         })
         .on('msg', (...argv) => {
           const [type, iArgv] = argv;

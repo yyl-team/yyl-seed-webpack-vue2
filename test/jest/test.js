@@ -5,7 +5,7 @@ const fs = require('fs');
 const frp = require('yyl-file-replacer');
 const http = require('http');
 
-const seed = require('../index.js');
+const seed = require('../../index.js');
 
 jest.setTimeout(30000);
 
@@ -17,6 +17,7 @@ const TEST_CTRL = {
 };
 
 const FRAG_PATH = path.join(__dirname, '__frag');
+const RUNNER_PATH = path.join(__dirname, '../runner/demo');
 
 
 const fn = {
@@ -336,7 +337,7 @@ if (TEST_CTRL.INIT) {
 if (TEST_CTRL.MAKE) {
   test('seed.make()', async () => {
     await fn.frag.build();
-    await extFs.copyFiles(path.join(__dirname, './demo'), FRAG_PATH);
+    await extFs.copyFiles(RUNNER_PATH, FRAG_PATH);
 
     const configPath = path.join(FRAG_PATH, 'config.js');
     const config = fn.parseConfig(configPath);
@@ -386,7 +387,7 @@ if (TEST_CTRL.MAKE) {
 if (TEST_CTRL.ALL) {
   test('seed.all()', async () => {
     await fn.frag.build();
-    await extFs.copyFiles(path.join(__dirname, './demo'), FRAG_PATH);
+    await extFs.copyFiles(RUNNER_PATH, FRAG_PATH);
 
     const configPath = path.join(FRAG_PATH, 'config.js');
     const config = fn.parseConfig(configPath);
