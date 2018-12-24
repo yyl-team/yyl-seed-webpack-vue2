@@ -141,9 +141,8 @@ const runner = {
     const opzer = seed.optimize(config, CONFIG_DIR);
 
     // 本地服务器
-    const platform = 'koa';
     let app = null;
-    if (platform === 'koa') {
+    if (iEnv.platform === 'koa') {
       app = new Koa();
       app.use(koaServeStatic(config.alias.destRoot));
     } else {
@@ -156,7 +155,7 @@ const runner = {
       app.use(serveIndex(config.alias.destRoot));
     }
 
-    await opzer.initServerMiddleWare(app, iEnv, platform);
+    await opzer.initServerMiddleWare(app, iEnv, iEnv.platform);
 
     app.listen(config.localserver.port);
 
