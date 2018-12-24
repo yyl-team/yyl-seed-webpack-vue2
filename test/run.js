@@ -8,9 +8,6 @@ const connect = require('connect');
 const serveIndex = require('serve-index');
 const serveStatic = require('serve-static');
 
-const Koa = require('koa');
-const koaServeStatic = require('koa-static');
-
 const seed = require('../index.js');
 
 let config = {};
@@ -142,18 +139,14 @@ const runner = {
 
     // 本地服务器
     let app = null;
-    if (iEnv.platform === 'koa') {
-      app = new Koa();
-      app.use(koaServeStatic(config.alias.destRoot));
-    } else {
-      app = connect();
-      app.use(serveStatic(config.alias.destRoot, {
-        'setHeaders': function(res) {
-          res.setHeader('Cache-Control', 'no-cache');
-        }
-      }));
-      app.use(serveIndex(config.alias.destRoot));
-    }
+
+    app = connect();
+    app.use(serveStatic(config.alias.destRoot, {
+      'setHeaders': function(res) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    }));
+    app.use(serveIndex(config.alias.destRoot));
 
     await opzer.initServerMiddleWare(app, iEnv, iEnv.platform);
 

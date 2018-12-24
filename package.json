@@ -54,7 +54,6 @@
     "imports-loader": "^0.8.0",
     "inline-resource-plugin": "^0.6.3",
     "json-loader": "^0.5.7",
-    "koa-webpack-middleware": "^1.0.7",
     "lodash": "^4.17.11",
     "node-sass": "^4.9.3",
     "postcss-loader": "^3.0.0",
@@ -88,8 +87,6 @@
   "devDependencies": {
     "connect": "^3.6.6",
     "jest": "^23.6.0",
-    "koa": "^2.6.2",
-    "koa-static": "^5.0.0",
     "serve-index": "^1.9.1",
     "serve-static": "^1.13.2"
   }
