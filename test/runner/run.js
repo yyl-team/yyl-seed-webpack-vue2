@@ -154,7 +154,7 @@ const runner = {
     fn.clearDest(config).then(() => {
       opzer.watch(iEnv)
         .on('clear', () => {
-          if (!iEnv.ignoreClear) {
+          if (!iEnv.silent) {
             util.cleanScreen();
           }
         })
@@ -164,10 +164,14 @@ const runner = {
           if (!util.msg[type]) {
             iType = 'info';
           }
-          util.msg[iType](iArgv);
+          if (!iEnv.silent) {
+            util.msg[iType](iArgv);
+          }
         })
         .on('finished', () => {
-          util.msg.success('task finished');
+          if (!iEnv.silent) {
+            util.msg.success('task finished');
+          }
         });
     });
   },
