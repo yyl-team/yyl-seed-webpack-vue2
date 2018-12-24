@@ -1,4 +1,8 @@
 # 版本信息
+## 0.4.0 (2018-12-24)
+* [ADD] 引入 `yyt` e2e test
+* [EDIT] 调整 `webpack-dev-middleware` 配置
+
 ## 0.3.8 (2018-11-30)
 * [FIX] 去掉多余的代码
 
