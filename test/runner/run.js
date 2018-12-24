@@ -4,10 +4,11 @@ const util = require('yyl-util');
 const extFs = require('yyl-fs');
 
 const connect = require('connect');
+
 const serveIndex = require('serve-index');
 const serveStatic = require('serve-static');
 
-const seed = require('../index.js');
+const seed = require('../../index.js');
 
 let config = {};
 
@@ -136,8 +137,9 @@ const runner = {
     const CONFIG_DIR = path.dirname(configPath);
     const opzer = seed.optimize(config, CONFIG_DIR);
 
+    let app = null;
     // 本地服务器
-    const app = connect();
+    app = connect();
     app.use(serveStatic(config.alias.destRoot, {
       'setHeaders': function(res) {
         res.setHeader('Cache-Control', 'no-cache');
@@ -145,15 +147,16 @@ const runner = {
     }));
     app.use(serveIndex(config.alias.destRoot));
 
-    await opzer.initServerMiddleWare(app, iEnv);
+    await opzer.initServerMiddleWare(app, iEnv, iEnv.platform);
 
     app.listen(config.localserver.port);
-
 
     fn.clearDest(config).then(() => {
       opzer.watch(iEnv)
         .on('clear', () => {
-          util.cleanScreen();
+          if (!iEnv.silent) {
+            util.cleanScreen();
+          }
         })
         .on('msg', (...argv) => {
           const [type, iArgv] = argv;
@@ -161,10 +164,14 @@ const runner = {
           if (!util.msg[type]) {
             iType = 'info';
           }
-          util.msg[iType](iArgv);
+          if (!iEnv.silent) {
+            util.msg[iType](iArgv);
+          }
         })
         .on('finished', () => {
-          util.msg.success('task finished');
+          if (!iEnv.silent) {
+            util.msg.success('task finished');
+          }
         });
     });
   },
