@@ -1,4 +1,7 @@
 # 版本信息
+## 0.4.1 (2018-12-25)
+* [ADD] 新增 `config.px2rem` 配置项
+
 ## 0.4.0 (2018-12-24)
 * [ADD] 引入 `yyt` e2e test
 * [EDIT] 调整 `webpack-dev-middleware` 配置

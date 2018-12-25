@@ -29,7 +29,8 @@ const COMMON_PATH = '../commons';
 Object.assign(config, {
   localserver: setting.localserver,
   dest: setting.dest,
-  platform: 'pc',
+  platform: 'mobile',
+  px2rem: false,
   entry: {
     'vendors': path.join(__dirname, './src/js/vendors.js')
   }
