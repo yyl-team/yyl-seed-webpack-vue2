@@ -43,6 +43,16 @@ module.exports = {
       })
       .url('http://127.0.0.1:5000/pc/html/index.html')
       .maximizeWindow()
+      // 检查是否存在错误
+      .getLog('browser', (logs) => {
+        let errors = [];
+        logs.forEach((log) => {
+          if (log.level === 'SEVERE' && log.message.split('favicon').length === 1) {
+            errors.push(log.message);
+          }
+        });
+        client.assert.equal(errors.join(' '), '');
+      })
       // 改个 颜色
       .perform((done) => {
         let scssCnt = fs.readFileSync(FRAG_COLOR_SASS_PATH).toString();
