@@ -3,13 +3,47 @@ const path = require('path');
 const extFs = require('yyl-fs');
 const fs = require('fs');
 
-const DEMO_PATH = path.join(__dirname, '../../runner/demo');
-const FRAG_PATH = path.join(__dirname, '../../__frag');
+const connect = require('connect');
+const serveStatic = require('serve-static');
+const util = require('yyl-util');
+
+const DEMO_PATH = path.join(__dirname, '../../test/runner/demo');
+const FRAG_PATH = path.join(__dirname, '../__frag');
 const FRAG_DIST_PATH = path.join(FRAG_PATH, 'dist');
 const FRAG_DIST_HTML_PATH = path.join(FRAG_DIST_PATH, 'pc/html/index.html');
 const FRAG_COLOR_SASS_PATH = path.join(FRAG_PATH, 'src/components/page/p-index/p-index.scss');
 
+const SERVER_PORT = 5000;
+
+const cache = {
+  server: null
+};
+
 const fn = {
+  server: {
+    async start() {
+      if (cache.server) {
+        await fn.server.abort();
+      }
+      await util.makeAwait((next) => {
+        cache.server = connect();
+        cache.server.use(serveStatic(FRAG_DIST_PATH));
+        cache.server.listen(SERVER_PORT, () => {
+          next();
+        });
+      });
+    },
+    async abort () {
+      if (cache.server) {
+        await util.makeAwait((next) => {
+          cache.server.close(() => {
+            cache.server = null;
+            next();
+          });
+        });
+      }
+    }
+  },
   checkHtml() {
     return new Promise((next) => {
       const checkIt = function () {

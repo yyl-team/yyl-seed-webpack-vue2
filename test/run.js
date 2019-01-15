@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const util = require('yyl-util');
 const extFs = require('yyl-fs');
+const print = require('yyl-print');
 
 const connect = require('connect');
 
@@ -12,17 +13,14 @@ const seed = require('../../index.js');
 
 let config = {};
 
-util.msg.init({
+print.log.init({
   maxSize: 8,
   type: {
-    rev: {name: 'rev', color: '#ffdd00'},
-    concat: {name: 'Concat', color: 'cyan'},
-    update: {name: 'Updated', color: 'cyan'},
-    proxyTo: {name: 'Proxy =>', color: 'gray'},
-    proxyBack: {name: 'Proxy <=', color: 'cyan'},
-    supercall: {name: 'Supercal', color: 'magenta'},
-    optimize: {name: 'Optimize', color: 'green'},
-    cmd: {name: 'CMD', color: 'gray'}
+    rev: {name: 'rev', color: 'yellow', bgColor: 'bgBlack'},
+    concat: {name: 'Concat', color: 'cyan', bgColor: 'bgBlue'},
+    update: {name: 'Updated', color: 'cyan', bgColor: 'bgBlue'},
+    optimize: {name: 'Optimize', color: 'green', bgColor: 'bgRed'},
+    cmd: {name: 'CMD', color: 'gray', bgColor: 'bgBlack'}
   }
 });
 
@@ -66,7 +64,7 @@ const runner = {
   },
   init(iEnv) {
     if (!iEnv.path) {
-      return util.msg.warn('task need --path options');
+      return print.log.warn('task need --path options');
     }
     const initPath = path.resolve(process.cwd(), iEnv.path);
 
@@ -78,10 +76,10 @@ const runner = {
       .on('msg', (...argv) => {
         const [type, iArgv] = argv;
         let iType = type;
-        if (!util.msg[type]) {
+        if (!print.log[type]) {
           iType = 'info';
         }
-        util.msg[iType](iArgv);
+        print.log[iType](iArgv);
       })
       .on('finished', () => {
         util.openPath(initPath);
@@ -92,12 +90,12 @@ const runner = {
     if (iEnv.config) {
       configPath = path.resolve(process.cwd(), iEnv.config);
       if (!fs.existsSync(configPath)) {
-        return util.msg.warn(`config path not exists: ${configPath}`);
+        return print.log.warn(`config path not exists: ${configPath}`);
       } else {
         config = fn.parseConfig(configPath);
       }
     } else {
-      return util.msg.warn('task need --config options');
+      return print.log.warn('task need --config options');
     }
 
     const CONFIG_DIR = path.dirname(configPath);
@@ -108,16 +106,16 @@ const runner = {
         .on('msg', (...argv) => {
           const [type, iArgv] = argv;
           let iType = type;
-          if (!util.msg[type]) {
+          if (!print.log[type]) {
             iType = 'info';
           }
-          util.msg[iType](iArgv);
+          print.log[iType](iArgv);
         })
         .on('clear', () => {
           util.cleanScreen();
         })
         .on('finished', () => {
-          util.msg.success('task finished');
+          print.log.success('task finished');
         });
     });
   },
@@ -126,12 +124,12 @@ const runner = {
     if (iEnv.config) {
       configPath = path.resolve(process.cwd(), iEnv.config);
       if (!fs.existsSync(configPath)) {
-        return util.msg.warn(`config path not exists: ${configPath}`);
+        return print.log.warn(`config path not exists: ${configPath}`);
       } else {
         config = fn.parseConfig(configPath);
       }
     } else {
-      return util.msg.warn('task need --config options');
+      return print.log.warn('task need --config options');
     }
 
     const CONFIG_DIR = path.dirname(configPath);
@@ -161,16 +159,16 @@ const runner = {
         .on('msg', (...argv) => {
           const [type, iArgv] = argv;
           let iType = type;
-          if (!util.msg[type]) {
+          if (!print.log[type]) {
             iType = 'info';
           }
           if (!iEnv.silent) {
-            util.msg[iType](iArgv);
+            print.log[iType](iArgv);
           }
         })
         .on('finished', () => {
           if (!iEnv.silent) {
-            util.msg.success('task finished');
+            print.log.success('task finished');
           }
         });
     });
@@ -180,12 +178,12 @@ const runner = {
     if (iEnv.config) {
       configPath = path.resolve(process.cwd(), iEnv.config);
       if (!fs.existsSync(configPath)) {
-        return util.msg.warn(`config path not exists: ${configPath}`);
+        return print.log.warn(`config path not exists: ${configPath}`);
       } else {
         config = fn.parseConfig(configPath);
       }
     } else {
-      return util.msg.warn('task need --config options');
+      return print.log.warn('task need --config options');
     }
 
     fn.clearDest(config).then(() => {
@@ -196,13 +194,13 @@ const runner = {
         .on('msg', (...argv) => {
           const [type, iArgv] = argv;
           let iType = type;
-          if (!util.msg[type]) {
+          if (!print.log[type]) {
             iType = 'info';
           }
-          util.msg[iType](iArgv);
+          print.log[iType](iArgv);
         })
         .on('finished', () => {
-          util.msg.success('task finished');
+          print.log.success('task finished');
         });
     });
   }
@@ -215,7 +213,7 @@ const runner = {
   if (ctrl in runner) {
     runner[ctrl](iEnv);
   } else {
-    util.msg.warn(`usage: ${Object.keys(runner).join(',')}`);
+    print.log.warn(`usage: ${Object.keys(runner).join(',')}`);
   }
 })();
 
