@@ -3,4 +3,5 @@ dist/
 *.log
 __committest/
 test/__frag/
-.vscode 
+ui-test/__frag/
+.vscode

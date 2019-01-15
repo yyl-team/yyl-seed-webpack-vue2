@@ -5,9 +5,16 @@ const fs = require('fs');
 
 const connect = require('connect');
 const serveStatic = require('serve-static');
+const serveFavicon = require('serve-favicon');
 const util = require('yyl-util');
+const request = require('yyl-request');
+const http = require('http');
 
-const DEMO_PATH = path.join(__dirname, '../../test/runner/demo');
+require('http-shutdown').extend();
+
+const Seed = require('../../index.js');
+
+const DEMO_PATH = path.join(__dirname, '../../test/demo');
 const FRAG_PATH = path.join(__dirname, '../__frag');
 const FRAG_DIST_PATH = path.join(FRAG_PATH, 'dist');
 const FRAG_DIST_HTML_PATH = path.join(FRAG_DIST_PATH, 'pc/html/index.html');
@@ -16,18 +23,46 @@ const FRAG_COLOR_SASS_PATH = path.join(FRAG_PATH, 'src/components/page/p-index/p
 const SERVER_PORT = 5000;
 
 const cache = {
-  server: null
+  server: null,
+  app: null
 };
 
+
 const fn = {
+  parseConfig(configPath) {
+    const config = require(configPath);
+    const dirname = path.dirname(configPath);
+
+    // alias format to absolute
+    Object.keys(config.alias).forEach((key) => {
+      config.alias[key] = util.path.resolve(
+        dirname,
+        config.alias[key]
+      );
+    });
+
+    if (config.resource) {
+      Object.keys(config.resource).forEach((key) => {
+        const curKey = util.path.resolve(dirname, key);
+        config.resource[curKey] = util.path.resolve(dirname, config.resource[key]);
+        delete config.resource[key];
+      });
+    }
+
+    return config;
+  },
   server: {
     async start() {
       if (cache.server) {
         await fn.server.abort();
       }
       await util.makeAwait((next) => {
-        cache.server = connect();
-        cache.server.use(serveStatic(FRAG_DIST_PATH));
+        cache.app = connect();
+        cache.app.use(serveStatic(FRAG_DIST_PATH));
+        cache.app.use(serveFavicon(path.join(__dirname, '../../resource/favicon.ico')));
+
+        cache.server = http.createServer(cache.app).withShutdown();
+
         cache.server.listen(SERVER_PORT, () => {
           next();
         });
@@ -36,8 +71,9 @@ const fn = {
     async abort () {
       if (cache.server) {
         await util.makeAwait((next) => {
-          cache.server.close(() => {
+          cache.server.shutdown(() => {
             cache.server = null;
+            cache.app = null;
             next();
           });
         });
@@ -70,22 +106,45 @@ module.exports = {
         await extFs.mkdirSync(FRAG_PATH);
         await extFs.copyFiles(DEMO_PATH, FRAG_PATH);
         await extFs.removeFiles(FRAG_DIST_PATH);
-        extOs.runCMD(`node ../../runner/run.js watch --config ${path.join(FRAG_PATH, 'config.js')} --ignoreClear --silent`, __dirname);
-        const r = await fn.checkHtml();
-        client.assert.equal(r, true);
-        done();
-      })
-      .url('http://127.0.0.1:5000/pc/html/index.html')
-      .maximizeWindow()
-      // 检查是否存在错误
-      .getLog('browser', (logs) => {
-        let errors = [];
-        logs.forEach((log) => {
-          if (log.level === 'SEVERE' && log.message.split('favicon').length === 1) {
-            errors.push(log.message);
-          }
+
+        const configPath = path.join(FRAG_PATH, 'config.js');
+
+        const config = fn.parseConfig(configPath);
+
+        const opzer = Seed.optimize(config, configPath);
+
+        const iEnv = {
+          silent: true
+        };
+
+
+
+        await fn.server.start();
+        opzer.initServerMiddleWare(cache.app, iEnv);
+
+        await util.makeAwait((next) => {
+          opzer.watch(iEnv).on('finished', () => {
+            next();
+          });
         });
-        client.assert.equal(errors.join(' '), '');
+
+        client.verify.ok(fs.existsSync(FRAG_DIST_HTML_PATH), `html path exists ${FRAG_DIST_HTML_PATH}`);
+
+        const htmls = await extFs.readFilePaths(FRAG_DIST_PATH, (iPath) => /\.html$/.test(iPath));
+
+        client.verify.ok(htmls.length !== 0, `build ${htmls.length} html files`);
+
+        const serverIndex = `http://${extOs.LOCAL_IP}:${SERVER_PORT}/pc/html/index.html`;
+
+        const [ err, res ] = await request(serverIndex);
+
+        client.verify.ok(err === null, `server no error ${err}`);
+        if (res && res.statusCode) {
+          client.verify.ok(res.statusCode === 200, `GET ${serverIndex} ${res.statusCode}`);
+        }
+
+        client.checkPageError(serverIndex);
+        done();
       })
       // 改个 颜色
       .perform((done) => {
@@ -99,7 +158,9 @@ module.exports = {
         this.assert.equal(result.value, 'rgba(255, 0, 0, 1)');
       })
       .end(async () => {
-        process.exit(1);
+        await fn.server.abort();
+        const r = await extFs.removeFiles(FRAG_PATH, true);
+        console.log(777, r)
       });
   }
 };
