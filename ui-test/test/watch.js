@@ -14,6 +14,8 @@ require('http-shutdown').extend();
 
 const Seed = require('../../index.js');
 
+const TEST_CTRL = require('../test.config.js');
+
 const DEMO_PATH = path.join(__dirname, '../../test/demo');
 const FRAG_PATH = path.join(__dirname, '../__frag');
 const FRAG_DIST_PATH = path.join(FRAG_PATH, 'dist');
@@ -21,6 +23,7 @@ const FRAG_DIST_HTML_PATH = path.join(FRAG_DIST_PATH, 'pc/html/index.html');
 const FRAG_COLOR_SASS_PATH = path.join(FRAG_PATH, 'src/components/page/p-index/p-index.scss');
 
 const SERVER_PORT = 5000;
+
 
 const cache = {
   server: null,
@@ -79,26 +82,10 @@ const fn = {
         });
       }
     }
-  },
-  checkHtml() {
-    return new Promise((next) => {
-      const checkIt = function () {
-        return fs.existsSync(FRAG_DIST_HTML_PATH);
-      };
-      const LIMIT = 10;
-      let padding = 0;
-
-      const iKey = setInterval(() => {
-        const r = checkIt();
-        if (padding > LIMIT  || r) {
-          clearInterval(iKey);
-          next(r);
-        }
-      }, 1000);
-    });
   }
 };
 module.exports = {
+  '@disabled': !TEST_CTRL.WATCH,
   'test seed.watch': function(client) {
     client
       .perform(async (done) => {
@@ -159,8 +146,7 @@ module.exports = {
       })
       .end(async () => {
         await fn.server.abort();
-        const r = await extFs.removeFiles(FRAG_PATH, true);
-        console.log(777, r)
+        await extFs.removeFiles(FRAG_PATH, true);
       });
   }
 };
