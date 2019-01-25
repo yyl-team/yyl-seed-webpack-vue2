@@ -3,12 +3,9 @@ const path = require('path');
 const extFs = require('yyl-fs');
 const fs = require('fs');
 
-const connect = require('connect');
-const serveStatic = require('serve-static');
-const serveFavicon = require('serve-favicon');
 const util = require('yyl-util');
 const request = require('yyl-request');
-const http = require('http');
+const tUtil = require('yyl-seed-test-util');
 
 require('http-shutdown').extend();
 
@@ -24,79 +21,27 @@ const FRAG_COLOR_SASS_PATH = path.join(FRAG_PATH, 'src/components/page/p-index/p
 
 const SERVER_PORT = 5000;
 
+tUtil.frag.init(FRAG_PATH);
+
 
 const cache = {
   server: null,
   app: null
 };
 
-
-const fn = {
-  parseConfig(configPath) {
-    const config = require(configPath);
-    const dirname = path.dirname(configPath);
-
-    // alias format to absolute
-    Object.keys(config.alias).forEach((key) => {
-      config.alias[key] = util.path.resolve(
-        dirname,
-        config.alias[key]
-      );
-    });
-
-    if (config.resource) {
-      Object.keys(config.resource).forEach((key) => {
-        const curKey = util.path.resolve(dirname, key);
-        config.resource[curKey] = util.path.resolve(dirname, config.resource[key]);
-        delete config.resource[key];
-      });
-    }
-
-    return config;
-  },
-  server: {
-    async start() {
-      if (cache.server) {
-        await fn.server.abort();
-      }
-      await util.makeAwait((next) => {
-        cache.app = connect();
-        cache.app.use(serveStatic(FRAG_DIST_PATH));
-        cache.app.use(serveFavicon(path.join(__dirname, '../../resource/favicon.ico')));
-
-        cache.server = http.createServer(cache.app).withShutdown();
-
-        cache.server.listen(SERVER_PORT, () => {
-          next();
-        });
-      });
-    },
-    async abort () {
-      if (cache.server) {
-        await util.makeAwait((next) => {
-          cache.server.shutdown(() => {
-            cache.server = null;
-            cache.app = null;
-            next();
-          });
-        });
-      }
-    }
-  }
-};
 module.exports = {
   '@disabled': !TEST_CTRL.WATCH,
   'test seed.watch': function(client) {
     client
       .perform(async (done) => {
-        await extFs.removeFiles(FRAG_PATH, true);
-        await extFs.mkdirSync(FRAG_PATH);
+        await tUtil.frag.build();
+
         await extFs.copyFiles(DEMO_PATH, FRAG_PATH);
         await extFs.removeFiles(FRAG_DIST_PATH);
 
         const configPath = path.join(FRAG_PATH, 'config.js');
 
-        const config = fn.parseConfig(configPath);
+        const config = tUtil.parseConfig(configPath);
 
         const opzer = Seed.optimize(config, configPath);
 
@@ -106,7 +51,7 @@ module.exports = {
 
 
 
-        await fn.server.start();
+        await tUtil.server.start();
         opzer.initServerMiddleWare(cache.app, iEnv);
 
         await util.makeAwait((next) => {
@@ -145,7 +90,7 @@ module.exports = {
         this.assert.equal(result.value, 'rgba(255, 0, 0, 1)');
       })
       .end(async () => {
-        await fn.server.abort();
+        await tUtil.server.abort();
         await extFs.removeFiles(FRAG_PATH, true);
       });
   }

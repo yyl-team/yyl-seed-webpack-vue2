@@ -3,13 +3,9 @@ const path = require('path');
 const util = require('yyl-util');
 const extFs = require('yyl-fs');
 const print = require('yyl-print');
+const tUtil = require('yyl-seed-test-util');
 
-const connect = require('connect');
-
-const serveIndex = require('serve-index');
-const serveStatic = require('serve-static');
-
-const seed = require('../../index.js');
+const seed = require('../index.js');
 
 let config = {};
 
@@ -33,28 +29,6 @@ const fn = {
         });
       });
     });
-  },
-  parseConfig(configPath) {
-    const config = require(configPath);
-    const dirname = path.dirname(configPath);
-
-    // alias format to absolute
-    Object.keys(config.alias).forEach((key) => {
-      config.alias[key] = util.path.resolve(
-        dirname,
-        config.alias[key]
-      );
-    });
-
-    if (config.resource) {
-      Object.keys(config.resource).forEach((key) => {
-        const curKey = util.path.resolve(dirname, key);
-        config.resource[curKey] = util.path.resolve(dirname, config.resource[key]);
-        delete config.resource[key];
-      });
-    }
-
-    return config;
   }
 };
 
@@ -62,37 +36,41 @@ const runner = {
   examples() {
     console.log(seed.examples);
   },
-  init(iEnv) {
+  async init(iEnv) {
     if (!iEnv.path) {
       return print.log.warn('task need --path options');
     }
     const initPath = path.resolve(process.cwd(), iEnv.path);
 
     // build path
-    util.mkdirSync(initPath);
+    await util.mkdirSync(initPath);
 
     // init
-    seed.init('single-project', initPath)
-      .on('msg', (...argv) => {
-        const [type, iArgv] = argv;
-        let iType = type;
-        if (!print.log[type]) {
-          iType = 'info';
-        }
-        print.log[iType](iArgv);
-      })
-      .on('finished', () => {
-        util.openPath(initPath);
-      });
+    return await util.makeAwait((next) => {
+      seed.init('single-project', initPath)
+        .on('msg', (...argv) => {
+          const [type, iArgv] = argv;
+          let iType = type;
+          if (!print.log[type]) {
+            iType = 'info';
+          }
+          print.log[iType](iArgv);
+        })
+        .on('finished', () => {
+          util.openPath(initPath);
+          next();
+        });
+    });
   },
-  all(iEnv) {
+
+  async all(iEnv) {
     let configPath;
     if (iEnv.config) {
       configPath = path.resolve(process.cwd(), iEnv.config);
       if (!fs.existsSync(configPath)) {
         return print.log.warn(`config path not exists: ${configPath}`);
       } else {
-        config = fn.parseConfig(configPath);
+        config = tUtil.parseConfig(configPath);
       }
     } else {
       return print.log.warn('task need --config options');
@@ -101,7 +79,8 @@ const runner = {
     const CONFIG_DIR = path.dirname(configPath);
     const opzer = seed.optimize(config, CONFIG_DIR);
 
-    fn.clearDest(config).then(() => {
+    await fn.clearDest(config);
+    return await util.makeAwait((next) => {
       opzer.all(iEnv)
         .on('msg', (...argv) => {
           const [type, iArgv] = argv;
@@ -116,6 +95,7 @@ const runner = {
         })
         .on('finished', () => {
           print.log.success('task finished');
+          next();
         });
     });
   },
@@ -126,7 +106,7 @@ const runner = {
       if (!fs.existsSync(configPath)) {
         return print.log.warn(`config path not exists: ${configPath}`);
       } else {
-        config = fn.parseConfig(configPath);
+        config = tUtil.parseConfig(configPath);
       }
     } else {
       return print.log.warn('task need --config options');
@@ -135,21 +115,11 @@ const runner = {
     const CONFIG_DIR = path.dirname(configPath);
     const opzer = seed.optimize(config, CONFIG_DIR);
 
-    let app = null;
     // 本地服务器
-    app = connect();
-    app.use(serveStatic(config.alias.destRoot, {
-      'setHeaders': function(res) {
-        res.setHeader('Cache-Control', 'no-cache');
-      }
-    }));
-    app.use(serveIndex(config.alias.destRoot));
+    await tUtil.server.start(config.alias.destRoot, config.localserver.port);
+    await fn.clearDest(config);
 
-    await opzer.initServerMiddleWare(app, iEnv, iEnv.platform);
-
-    app.listen(config.localserver.port);
-
-    fn.clearDest(config).then(() => {
+    return util.makeAwait((next) => {
       opzer.watch(iEnv)
         .on('clear', () => {
           if (!iEnv.silent) {
@@ -170,23 +140,25 @@ const runner = {
           if (!iEnv.silent) {
             print.log.success('task finished');
           }
+          next();
         });
     });
   },
-  make(iEnv) {
+  async make(iEnv) {
     let configPath;
     if (iEnv.config) {
       configPath = path.resolve(process.cwd(), iEnv.config);
       if (!fs.existsSync(configPath)) {
         return print.log.warn(`config path not exists: ${configPath}`);
       } else {
-        config = fn.parseConfig(configPath);
+        config = tUtil.parseConfig(configPath);
       }
     } else {
       return print.log.warn('task need --config options');
     }
 
-    fn.clearDest(config).then(() => {
+    await fn.clearDest(config);
+    await util.makeAwait((next) => {
       seed.make(iEnv.name, config)
         .on('start', () => {
           util.cleanScreen();
@@ -201,6 +173,7 @@ const runner = {
         })
         .on('finished', () => {
           print.log.success('task finished');
+          next();
         });
     });
   }
