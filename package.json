@@ -95,6 +95,6 @@
     "yyl-os": "^0.2.0",
     "yyl-print": "^0.4.0",
     "yyl-request": "^0.1.0",
-    "yyl-seed-test-util": "^0.2.0"
+    "yyl-seed-test-util": "^0.3.0"
   }
 }
