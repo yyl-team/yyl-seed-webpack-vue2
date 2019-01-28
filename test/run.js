@@ -3,6 +3,7 @@ const path = require('path');
 const util = require('yyl-util');
 const extFs = require('yyl-fs');
 const print = require('yyl-print');
+const extOs = require('yyl-os');
 const tUtil = require('yyl-seed-test-util');
 
 const seed = require('../index.js');
@@ -43,7 +44,7 @@ const runner = {
     const initPath = path.resolve(process.cwd(), iEnv.path);
 
     // build path
-    await util.mkdirSync(initPath);
+    await extFs.mkdirSync(initPath);
 
     // init
     return await util.makeAwait((next) => {
@@ -57,7 +58,7 @@ const runner = {
           print.log[iType](iArgv);
         })
         .on('finished', () => {
-          util.openPath(initPath);
+          extOs.openPath(initPath);
           next();
         });
     });
@@ -91,7 +92,7 @@ const runner = {
           print.log[iType](iArgv);
         })
         .on('clear', () => {
-          util.cleanScreen();
+          print.cleanScreen();
         })
         .on('finished', () => {
           print.log.success('task finished');
@@ -123,7 +124,7 @@ const runner = {
       opzer.watch(iEnv)
         .on('clear', () => {
           if (!iEnv.silent) {
-            util.cleanScreen();
+            print.cleanScreen();
           }
         })
         .on('msg', (...argv) => {
@@ -161,7 +162,7 @@ const runner = {
     await util.makeAwait((next) => {
       seed.make(iEnv.name, config)
         .on('start', () => {
-          util.cleanScreen();
+          print.cleanScreen();
         })
         .on('msg', (...argv) => {
           const [type, iArgv] = argv;

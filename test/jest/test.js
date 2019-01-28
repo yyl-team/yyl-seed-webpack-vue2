@@ -1,4 +1,5 @@
 const util = require('yyl-util');
+const tUtil = require('yyl-seed-test-util');
 const path = require('path');
 const extFs = require('yyl-fs');
 const fs = require('fs');
@@ -17,83 +18,31 @@ const TEST_CTRL = {
 };
 
 const FRAG_PATH = path.join(__dirname, '__frag');
-const RUNNER_PATH = path.join(__dirname, '../runner/demo');
+const RUNNER_PATH = path.join(__dirname, '../demo');
+
+tUtil.frag.init(FRAG_PATH);
 
 
 const fn = {
-  makeAwait(fn) {
-    return new Promise(fn);
-  },
-  parseConfig(configPath) {
-    const config = util.requireJs(configPath);
-    const dirname = path.dirname(configPath);
-
-    // alias format to absolute
-    Object.keys(config.alias).forEach((key) => {
-      config.alias[key] = util.path.resolve(
-        dirname,
-        config.alias[key]
-      );
-    });
-
-    if (config.resource) {
-      Object.keys(config.resource).forEach((key) => {
-        const curKey = util.path.resolve(dirname, key);
-        config.resource[curKey] = util.path.resolve(dirname, config.resource[key]);
-        delete config.resource[key];
-      });
-    }
-    return config;
-  },
-  hideUrlTail: function(url) {
-    return url
-      .replace(/\?.*?$/g, '')
-      .replace(/#.*?$/g, '');
-  },
-  frag: {
-    clearDest(config, copyFont) {
-      return new Promise((next) => {
-        extFs.removeFiles(config.alias.destRoot).then(() => {
-          if (copyFont) {
-            extFs.copyFiles(config.resource).then(() => {
-              next();
-            });
-          } else {
+  clearDest(config, copyFont) {
+    return new Promise((next) => {
+      extFs.removeFiles(config.alias.destRoot).then(() => {
+        if (copyFont) {
+          extFs.copyFiles(config.resource).then(() => {
             next();
-          }
-        });
-      });
-    },
-    here(f, done) {
-      new util.Promise((next) => {
-        fn.frag.build().then(() => {
+          });
+        } else {
           next();
-        });
-      }).then((next) => {
-        f(next);
-      }).then(() => {
-        fn.frag.destroy().then(() => {
-          done();
-        });
-      }).start();
-    },
-    build() {
-      if (fs.existsSync(FRAG_PATH)) {
-        return extFs.removeFiles(FRAG_PATH);
-      } else {
-        return extFs.mkdirSync(FRAG_PATH);
-      }
-    },
-    destroy() {
-      return extFs.removeFiles(FRAG_PATH, true);
-    }
+        }
+      });
+    });
   }
 };
 
 const linkCheck = function (config, next) {
-  const htmlArr = util.readFilesSync(config.alias.destRoot, /\.html$/);
-  const cssArr = util.readFilesSync(config.alias.destRoot, /\.css$/);
-  const jsArr = util.readFilesSync(config.alias.destRoot, /\.js$/);
+  const htmlArr = extFs.readFilesSync(config.alias.destRoot, /\.html$/);
+  const cssArr = extFs.readFilesSync(config.alias.destRoot, /\.css$/);
+  const jsArr = extFs.readFilesSync(config.alias.destRoot, /\.js$/);
 
   const destRoot = config.alias.destRoot;
   const LOCAL_SOURCE_REG = new RegExp(`^(${config.commit.hostname})`);
@@ -109,13 +58,13 @@ const linkCheck = function (config, next) {
   const sourcePickup = function (iPath, dir) {
     if (iPath.match(LOCAL_SOURCE_REG)) {
       localSource.push(
-        fn.hideUrlTail(
+        tUtil.hideUrlTail(
           util.path.join(destRoot, iPath.replace(LOCAL_SOURCE_REG, ''))
         )
       );
     } else if (iPath.match(ABSOLUTE_SOURCE_REG)) {
       localSource.push(
-        fn.hideUrlTail(
+        tUtil.hideUrlTail(
           util.path.join(destRoot, iPath.replace(LOCAL_SOURCE_REG, '$1'))
         )
       );
@@ -123,7 +72,7 @@ const linkCheck = function (config, next) {
       remoteSource.push(iPath);
     } else if (iPath.match(RELATIVE_SOURCE_REG)) {
       localSource.push(
-        fn.hideUrlTail(
+        tUtil.hideUrlTail(
           util.path.join(dir, iPath)
         )
       );
@@ -244,12 +193,12 @@ if (TEST_CTRL.INIT) {
   const checkComplatable = (type, targetPath) => {
     const MAIN_PATH = util.path.join(seed.path, 'examples', type);
 
-    const fromCommons = util.readFilesSync(COMMONS_PATH, (iPath) => {
+    const fromCommons = extFs.readFilesSync(COMMONS_PATH, (iPath) => {
       const relativePath = util.path.relative(COMMONS_PATH, iPath);
       return !relativePath.match(seed.init.FILTER.COPY_FILTER);
     });
 
-    const fromMains = util.readFilesSync(MAIN_PATH, (iPath) => {
+    const fromMains = extFs.readFilesSync(MAIN_PATH, (iPath) => {
       const relativePath = util.path.relative(MAIN_PATH, iPath);
       return !relativePath.match(seed.init.FILTER.COPY_FILTER);
     });
@@ -279,7 +228,7 @@ if (TEST_CTRL.INIT) {
 
   // 可以性校验
   const checkUsage = (configPath) => {
-    const config = fn.parseConfig(configPath);
+    const config = tUtil.parseConfig(configPath);
     const dirname = path.dirname(configPath);
     const configKeys = Object.keys(config);
     const runner = (next) => {
@@ -295,7 +244,7 @@ if (TEST_CTRL.INIT) {
 
   seed.examples.forEach((type) => {
     test(`seed.init ${type}`, async () => {
-      await fn.frag.build();
+      await tUtil.frag.build();
       const targetPath = path.join(FRAG_PATH, type);
       extFs.mkdirSync(targetPath);
 
@@ -304,7 +253,7 @@ if (TEST_CTRL.INIT) {
         msg: 0,
         finished: 0
       };
-      await fn.makeAwait((next) => {
+      await util.makeAwait((next) => {
         seed.init(type, targetPath)
           .on('start', () => {
             timePadding.start++;
@@ -329,22 +278,22 @@ if (TEST_CTRL.INIT) {
           });
       });
 
-      await fn.frag.destroy();
+      await tUtil.frag.destroy();
     });
   });
 }
 
 if (TEST_CTRL.MAKE) {
   test('seed.make()', async () => {
-    await fn.frag.build();
+    await tUtil.frag.build();
     await extFs.copyFiles(RUNNER_PATH, FRAG_PATH);
 
     const configPath = path.join(FRAG_PATH, 'config.js');
-    const config = fn.parseConfig(configPath);
+    const config = tUtil.parseConfig(configPath);
 
     // page components
     const pName = 'p-maketest';
-    await fn.makeAwait((next) => {
+    await util.makeAwait((next) => {
       seed.make(pName, config)
         .on('finished', () => {
           next();
@@ -358,7 +307,7 @@ if (TEST_CTRL.MAKE) {
 
     // widget components
     const wName = 'w-maketest';
-    await fn.makeAwait((next) => {
+    await util.makeAwait((next) => {
       seed.make(wName, config)
         .on('finished', () => {
           next();
@@ -370,7 +319,7 @@ if (TEST_CTRL.MAKE) {
 
     // default components
     const dName = 'maketest';
-    await fn.makeAwait((next) => {
+    await util.makeAwait((next) => {
       seed.make(dName, config)
         .on('finished', () => {
           next();
@@ -380,24 +329,24 @@ if (TEST_CTRL.MAKE) {
     const dPath = path.join(config.alias.srcRoot, `components/widget/${dName}/${dName}.vue`);
     expect(fs.existsSync(dPath)).toEqual(true);
 
-    await fn.frag.destroy();
+    await tUtil.frag.destroy();
   });
 }
 
 if (TEST_CTRL.ALL) {
   test('seed.all()', async () => {
-    await fn.frag.build();
+    await tUtil.frag.build();
     await extFs.copyFiles(RUNNER_PATH, FRAG_PATH);
 
     const configPath = path.join(FRAG_PATH, 'config.js');
-    const config = fn.parseConfig(configPath);
+    const config = tUtil.parseConfig(configPath);
 
     const opzer = seed.optimize(config, path.dirname(configPath));
 
-    await fn.frag.clearDest(config);
+    await fn.clearDest(config);
 
     // all
-    await fn.makeAwait((next) => {
+    await util.makeAwait((next) => {
       const timePadding = {
         start: 0,
         msg: 0,
@@ -427,10 +376,10 @@ if (TEST_CTRL.ALL) {
     await checkAsyncComponent(config);
     await checkCssFiles(config);
 
-    await fn.frag.clearDest(config);
+    await fn.clearDest(config);
 
     // all --remote
-    await fn.makeAwait((next) => {
+    await util.makeAwait((next) => {
       opzer.all({ remote: true })
         .on('finished', () => {
           linkCheck(config, () => {
@@ -442,10 +391,10 @@ if (TEST_CTRL.ALL) {
     await checkAsyncComponent(config);
     await checkCssFiles(config);
 
-    await fn.frag.clearDest(config);
+    await fn.clearDest(config);
 
     // all --isCommit
-    await fn.makeAwait((next) => {
+    await util.makeAwait((next) => {
       opzer.all({ isCommit: true })
         .on('finished', () => {
           linkCheck(config, () => {
@@ -457,6 +406,6 @@ if (TEST_CTRL.ALL) {
     await checkAsyncComponent(config);
     await checkCssFiles(config);
 
-    await fn.frag.destroy();
+    await tUtil.frag.destroy();
   });
 }

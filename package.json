@@ -93,8 +93,8 @@
     "serve-index": "^1.9.1",
     "serve-static": "^1.13.2",
     "yyl-os": "^0.2.0",
-    "yyl-print": "^0.3.0",
+    "yyl-print": "^0.4.0",
     "yyl-request": "^0.1.0",
-    "yyl-seed-test-util": "^0.1.1"
+    "yyl-seed-test-util": "^0.2.0"
   }
 }
