@@ -118,6 +118,9 @@ const runner = {
 
     // 本地服务器
     await tUtil.server.start(config.alias.destRoot, config.localserver.port);
+
+    opzer.initServerMiddleWare(tUtil.server.getAppSync(), iEnv);
+
     await fn.clearDest(config);
 
     return util.makeAwait((next) => {

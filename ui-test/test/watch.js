@@ -7,91 +7,79 @@ const util = require('yyl-util');
 const request = require('yyl-request');
 const tUtil = require('yyl-seed-test-util');
 
-require('http-shutdown').extend();
+const seed = require('../../index.js');
 
-const Seed = require('../../index.js');
-
+const FRAG_PATH = path.join(__dirname, '../__frag');
 const TEST_CTRL = require('../test.config.js');
 
-const DEMO_PATH = path.join(__dirname, '../../test/demo');
-const FRAG_PATH = path.join(__dirname, '../__frag');
-const FRAG_DIST_PATH = path.join(FRAG_PATH, 'dist');
-const FRAG_DIST_HTML_PATH = path.join(FRAG_DIST_PATH, 'pc/html/index.html');
-const FRAG_COLOR_SASS_PATH = path.join(FRAG_PATH, 'src/components/page/p-index/p-index.scss');
-
-const SERVER_PORT = 5000;
+const PORT = 5000;
 
 tUtil.frag.init(FRAG_PATH);
 
+module.exports['@disabled'] = !TEST_CTRL.WATCH;
 
-const cache = {
-  server: null,
-  app: null
-};
-
-module.exports = {
-  '@disabled': !TEST_CTRL.WATCH,
-  'test seed.watch': function(client) {
-    client
+const casePath = path.join(__dirname, '../../test/case');
+const projectDir = fs.readdirSync(casePath);
+projectDir.forEach((pjName) => {
+  const oPath = path.join(casePath, pjName);
+  module.exports[`test ${pjName}`] = function(client) {
+    const pjPath = path.join(FRAG_PATH, pjName);
+    let remoteIndex = '';
+    return client
       .perform(async (done) => {
         await tUtil.frag.build();
+        await extFs.mkdirSync(pjPath);
+        await extFs.copyFiles(oPath, pjPath);
 
-        await extFs.copyFiles(DEMO_PATH, FRAG_PATH);
-        await extFs.removeFiles(FRAG_DIST_PATH);
-
-        const configPath = path.join(FRAG_PATH, 'config.js');
-
+        const configPath = path.join(pjPath, 'config.js');
+        const destPath = path.join(pjPath, 'dist');
         const config = tUtil.parseConfig(configPath);
 
-        const opzer = Seed.optimize(config, configPath);
+        client.verify.ok(fs.existsSync(configPath) === true, `check config path exists: ${configPath}`);
 
-        const iEnv = {
-          silent: true
-        };
+        const opzer = seed.optimize(config, pjPath);
 
-
-
-        await tUtil.server.start();
-        opzer.initServerMiddleWare(cache.app, iEnv);
+        await extFs.mkdirSync(destPath);
+        await tUtil.server.start(destPath, PORT);
+        opzer.initServerMiddleWare(tUtil.server.getAppSync(), {});
 
         await util.makeAwait((next) => {
-          opzer.watch(iEnv).on('finished', () => {
-            next();
-          });
+          opzer.watch({})
+            .on('finished', () => {
+              next();
+            });
         });
 
-        client.verify.ok(fs.existsSync(FRAG_DIST_HTML_PATH), `html path exists ${FRAG_DIST_HTML_PATH}`);
+        const htmls = await extFs.readFilePaths(destPath, (iPath) => /\.html$/.test(iPath));
+        client.verify.ok(htmls.length !== 0, `expect build ${htmls.length} html files`);
 
-        const htmls = await extFs.readFilePaths(FRAG_DIST_PATH, (iPath) => /\.html$/.test(iPath));
+        remoteIndex = `http://127.0.0.1:${PORT}/${util.path.relative(destPath, htmls[0])}`;
+        const [, res] = await request.get(remoteIndex);
+        client.verify.ok(typeof res !== 'undefined', `expect remoteIndex [${remoteIndex}] request no error`);
+        client.verify.ok(res.statusCode === 200, `expect statusCode ${res.statusCode}`);
 
-        client.verify.ok(htmls.length !== 0, `build ${htmls.length} html files`);
+        client
+          .checkPageError(remoteIndex);
 
-        const serverIndex = `http://${extOs.LOCAL_IP}:${SERVER_PORT}/pc/html/index.html`;
-
-        const [ err, res ] = await request(serverIndex);
-
-        client.verify.ok(err === null, `server no error ${err}`);
-        if (res && res.statusCode) {
-          client.verify.ok(res.statusCode === 200, `GET ${serverIndex} ${res.statusCode}`);
-        }
-
-        client.checkPageError(serverIndex);
         done();
       })
-      // 改个 颜色
-      .perform((done) => {
-        let scssCnt = fs.readFileSync(FRAG_COLOR_SASS_PATH).toString();
+      .perform(async (done) => {
+        const scssPaths = await extFs.readFilePaths(path.join(pjPath, 'src/entry'), (iPath) => /\.scss$/.test(iPath));
+        client.verify.ok(scssPaths.length !== 0, `expect have ${scssPaths.length} scss files: [${scssPaths[0]}]`);
+        const iScss = scssPaths[0];
+        let scssCnt = fs.readFileSync(iScss).toString();
         scssCnt += '\nbody {background-color: red;}';
-        fs.writeFileSync(FRAG_COLOR_SASS_PATH, scssCnt);
+        fs.writeFileSync(iScss, scssCnt);
         done();
       })
-      .waitFor(3000)
-      .getCssProperty('body', 'background-color', function (result) {
-        this.assert.equal(result.value, 'rgba(255, 0, 0, 1)');
+      .waitFor(2000)
+      .getCssProperty('body', 'background-color', (result) => {
+        console.log(result.value);
+        client.verify.ok(result.value === 'rgba(255, 0, 0, 1)', `expect body turning red ${result.value}`);
       })
       .end(async () => {
         await tUtil.server.abort();
-        await extFs.removeFiles(FRAG_PATH, true);
+        await tUtil.frag.destroy();
       });
-  }
-};
+  };
+});
