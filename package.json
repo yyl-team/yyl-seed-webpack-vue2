@@ -83,6 +83,7 @@
     "yyl-file-replacer": "^0.3.1",
     "yyl-flexlayout": "^1.5.0",
     "yyl-fs": "^0.2.0",
+    "yyl-os": "^0.2.0",
     "yyl-seed-response": "^0.1.0",
     "yyl-util": "^2.0.0"
   },
@@ -93,7 +94,6 @@
     "serve-favicon": "^2.5.0",
     "serve-index": "^1.9.1",
     "serve-static": "^1.13.2",
-    "yyl-os": "^0.2.0",
     "yyl-print": "^0.4.0",
     "yyl-request": "^0.1.0",
     "yyl-seed-test-util": "^0.3.0"

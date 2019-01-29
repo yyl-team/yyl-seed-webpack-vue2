@@ -1,4 +1,3 @@
-const extOs = require('yyl-os');
 const path = require('path');
 const extFs = require('yyl-fs');
 const fs = require('fs');
