@@ -2,6 +2,7 @@ const path = require('path');
 const querystring = require('querystring');
 const fs = require('fs');
 const extFs = require('yyl-fs');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = require('./config.js');
 
@@ -42,6 +43,15 @@ const wConfig = {
       use: 'ts-loader',
       exclude: /node_modules/
     }]
-  }
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, './src/entry/index/index.pug'),
+      filename: path.relative(config.alias.jsDest, path.join(config.alias.htmlDest, 'index.html')),
+      chunks: ['vendors', 'index'],
+      inlineSource: '.(js|ts|css)\\?__inline$',
+      minify: false
+    })
+  ]
 };
 module.exports = wConfig;
