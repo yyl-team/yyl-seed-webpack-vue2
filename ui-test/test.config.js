@@ -1,4 +1,4 @@
 module.exports = {
-  // INIT: true,
+  INIT: true,
   WATCH: true
 };
