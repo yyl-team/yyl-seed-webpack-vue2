@@ -1,3 +1,4 @@
+/* eslint prefer-arrow-callback: 0 */
 const path = require('path');
 const extFs = require('yyl-fs');
 const fs = require('fs');
@@ -15,25 +16,33 @@ const PORT = 5000;
 
 tUtil.frag.init(FRAG_PATH);
 
-module.exports['@disabled'] = !TEST_CTRL.WATCH;
+module.exports['@disabled'] = !TEST_CTRL.ENV;
 
-const casePath = path.join(__dirname, '../../test/case');
-const projectDir = fs.readdirSync(casePath);
-projectDir.forEach((pjName) => {
-  const oPath = path.join(casePath, pjName);
-  module.exports[`test ${pjName}`] = function(client) {
-    const pjPath = path.join(FRAG_PATH, pjName);
+const envList = [
+  [{}, 'development'],
+  [{ proxy: true }, 'development'],
+  [{ proxy: true, remote: true }, 'development'],
+  [{ isCommit: true }, 'production'],
+  [{ isCommit: true, proxy: true }, 'production'],
+  [{ isCommit: true, remote: true }, 'production'],
+  [{ isCommit: true, remote: true, proxy: true }, 'production'],
+  [{ isCommit: true, remote: true, proxy: true, NODE_ENV: 'development' }, 'development']
+];
+
+const oPath = path.join(__dirname, '../../test/case/env-test');
+
+envList.forEach(([iEnv, mode]) => {
+  module.exports[`test env ${util.envStringify(iEnv)}`] = function(client) {
     let remoteIndex = '';
+
+    const pjName = `test-${util.envStringify(iEnv).split(' ').join('-')}`;
+    const pjPath = path.join(FRAG_PATH, pjName);
+
     return client
-      .perform(async (done) => {
+      .perform(async(done) => {
         await tUtil.frag.build();
         await extFs.mkdirSync(pjPath);
         await extFs.copyFiles(oPath, pjPath);
-
-        const nodeModulePath = path.join(pjPath, 'node_modules');
-        if (fs.existsSync(nodeModulePath)) {
-          await extFs.removeFiles(nodeModulePath);
-        }
 
         const configPath = path.join(pjPath, 'config.js');
         const destPath = path.join(pjPath, 'dist');
@@ -45,10 +54,10 @@ projectDir.forEach((pjName) => {
 
         await extFs.mkdirSync(destPath);
         await tUtil.server.start(destPath, PORT);
-        opzer.initServerMiddleWare(tUtil.server.getAppSync(), {});
+        // opzer.initServerMiddleWare(tUtil.server.getAppSync(), {});
 
         await util.makeAwait((next) => {
-          opzer.watch({})
+          opzer.watch(iEnv)
             .on('finished', () => {
               next();
             });
@@ -67,21 +76,12 @@ projectDir.forEach((pjName) => {
 
         done();
       })
-      .perform(async (done) => {
-        const scssPaths = await extFs.readFilePaths(path.join(pjPath, 'src/entry'), (iPath) => /\.scss$/.test(iPath));
-        client.verify.ok(scssPaths.length !== 0, `expect have ${scssPaths.length} scss files: [${scssPaths[0]}]`);
-        const iScss = scssPaths[0];
-        let scssCnt = fs.readFileSync(iScss).toString();
-        scssCnt += '\nbody {background-color: red;}';
-        fs.writeFileSync(iScss, scssCnt);
-        done();
+      .executeAsync(function (ctx, done) {
+        done(window.mode);
+      }, [''], (result) => {
+        client.verify.ok(result.value === mode, `expect mode equal ${mode} but ${result.value}`);
       })
-      .waitFor(2000)
-      .getCssProperty('body', 'background-color', (result) => {
-        console.log(result.value);
-        client.verify.ok(result.value === 'rgba(255, 0, 0, 1)', `expect body turning red ${result.value}`);
-      })
-      .end(async () => {
+      .end(async() => {
         await tUtil.server.abort();
         await tUtil.frag.destroy();
       });
