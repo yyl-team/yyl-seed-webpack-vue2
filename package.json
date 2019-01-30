@@ -96,6 +96,6 @@
     "serve-static": "^1.13.2",
     "yyl-print": "^0.4.0",
     "yyl-request": "^0.1.0",
-    "yyl-seed-test-util": "^0.3.0"
+    "yyl-seed-test-util": "^0.3.1"
   }
 }
