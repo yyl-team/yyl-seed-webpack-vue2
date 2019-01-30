@@ -1,6 +1,6 @@
 {
   "name": "yyl-seed-webpack-vue2",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "",
   "main": "index.js",
   "engines": {
@@ -12,19 +12,21 @@
   },
   "scripts": {
     "test": "jest ./test/jest/ --env=node",
-    "ui-test": "yyt ./test/yyt",
-    "all-example-just-webpack": "node ./test/runner/run.js all --config ./examples/just-webpack/config.js",
-    "all-example-single-project": "node ./test/runner/run.js all --config ./examples/single-project/config.js",
-    "all": "node ./test/runner/run.js all --config ./test/runner/demo/config.js --NODE_ENV production",
-    "all-isCommit": "node ./test/runner/run.js all --config ./test/runner/demo/config.js --isCommit",
-    "all-remote": "node ./test/runner/run.js all --config ./test/runner/demo/config.js --remote",
-    "watch": "node ./test/runner/run.js watch --config ./test/runner/demo/config.js",
-    "watch-koa": "node ./test/runner/run.js watch --config ./test/runner/demo/config.js --platform koa",
-    "watch-isCommit": "node ./test/runner/run.js watch --config ./test/runner/demo/config.js --isCommit",
-    "init": "node ./test/runner/run.js init --path ./test/__frag",
-    "examples": "node ./test/runner/run.js examples",
-    "make-page": "node ./test/runner/run.js make --config ./test/runner/demo/config.js --name p-maketest",
-    "make-widget": "node ./test/runner/run.js make --config ./test/runner/demo/config.js --name w-maketest"
+    "ui-test": "yyt",
+    "all-example-just-webpack": "node ./test/run.js all --config ./examples/just-webpack/config.js",
+    "all-example-single-project": "node ./test/run.js all --config ./examples/single-project/config.js",
+    "all": "node ./test/run.js all --config ./test/case/demo/config.js --NODE_ENV production",
+    "all-isCommit": "node ./test/run.js all --config ./test/case/demo/config.js --isCommit",
+    "all-remote": "node ./test/run.js all --config ./test/case/demo/config.js --remote",
+    "watch": "node ./test/run.js watch --config ./test/case/demo/config.js",
+    "watch-koa": "node ./test/run.js watch --config ./test/case/demo/config.js --platform koa",
+    "watch-isCommit": "node ./test/run.js watch --config ./test/case/demo/config.js --isCommit",
+    "watch-case-extend-webpack": "node ./test/run.js watch --config ./test/case/extend-webapck/config.js",
+    "watch-case-env-test": "node ./test/run.js watch --config ./test/case/env-test/config.js --NODE_ENV production",
+    "init": "node ./test/run.js init --path ./test/__frag",
+    "examples": "node ./test/run.js examples",
+    "make-page": "node ./test/run.js make --config ./test/case/demo/config.js --name p-maketest",
+    "make-widget": "node ./test/run.js make --config ./test/case/demo/config.js --name w-maketest"
   },
   "repository": {
     "type": "git",
@@ -56,7 +58,7 @@
     "inline-resource-plugin": "^0.6.3",
     "json-loader": "^0.5.7",
     "lodash": "^4.17.11",
-    "node-sass": "^4.9.3",
+    "node-sass": "4.10.0",
     "postcss-loader": "^3.0.0",
     "postcss-px2rem": "^0.3.0",
     "pug": "^2.0.3",
@@ -81,15 +83,20 @@
     "webpack-merge": "^4.1.4",
     "yyl-file-replacer": "^0.3.1",
     "yyl-flexlayout": "^1.5.0",
-    "yyl-fs": "^0.1.1",
+    "yyl-fs": "^0.2.0",
+    "yyl-os": "^0.2.0",
     "yyl-seed-response": "^0.1.0",
-    "yyl-util": "^1.14.4"
+    "yyl-util": "^2.0.0"
   },
   "devDependencies": {
     "connect": "^3.6.6",
+    "http-shutdown": "^1.2.0",
     "jest": "^23.6.0",
+    "serve-favicon": "^2.5.0",
     "serve-index": "^1.9.1",
     "serve-static": "^1.13.2",
-    "yyl-os": "^0.2.0"
+    "yyl-print": "^0.4.0",
+    "yyl-request": "^0.1.0",
+    "yyl-seed-test-util": "^0.3.1"
   }
 }

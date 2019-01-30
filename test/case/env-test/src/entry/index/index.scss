@@ -1,0 +1,17 @@
+@charset "utf-8";
+@import "../../sass/normalize";
+@import "../../sass/_mixin";
+
+html, body, #app {
+  height: 100%;
+}
+
+.just-img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 150px;
+  height: 116px;
+  margin: -58px 0 0 -75px;
+}
+
