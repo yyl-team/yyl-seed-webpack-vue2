@@ -1,4 +1,7 @@
 # 版本信息
+## 0.5.0 (2019-01-30)
+* [ADD] 支持项目中配置 自己的 `package.json` 和 `webpack.config.js`
+
 ## 0.4.2 (2019-01-03)
 * [FIX] 修复 `multi entry` 时 js 打包 没有独立分开问题
 
