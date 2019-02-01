@@ -1,4 +1,7 @@
 # 版本信息
+## 0.5.1 (2019-01-30)
+* [FIX] 锁死 webpack 版本为 `4.19.0`
+
 ## 0.5.0 (2019-01-30)
 * [ADD] 支持项目中配置 自己的 `package.json` 和 `webpack.config.js`
 * [ADD] `---anything 123` 会映射到 项目中的 `proccess.env.anything === 123`
