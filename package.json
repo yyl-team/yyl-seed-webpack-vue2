@@ -1,6 +1,6 @@
 {
   "name": "yyl-seed-webpack-vue2",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "",
   "main": "index.js",
   "engines": {
@@ -76,7 +76,7 @@
     "vue-template-compiler": "^2.5.17",
     "vuex": "^3.0.1",
     "watch": "^1.0.2",
-    "webpack": "^4.19.0",
+    "webpack": "4.19.0",
     "webpack-combine-loaders": "^2.0.4",
     "webpack-dev-middleware": "^3.4.0",
     "webpack-hot-middleware": "^2.24.3",
