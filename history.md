@@ -1,4 +1,11 @@
 # 版本信息
+## 0.5.2
+* [EDIT] 升级 `webpack` 到 `4.29.3`
+* [EDIT] 升级 `vue-loader` 到 `15`
+* [EDIT] 升级 `babel-loader` 到 `7`
+* [EDIT] 升级 `vue` 到 `2.6.6`
+* [EDIT] 对应配置调整
+
 ## 0.5.1 (2019-01-30)
 * [FIX] 锁死 webpack 版本为 `4.19.0`
 
