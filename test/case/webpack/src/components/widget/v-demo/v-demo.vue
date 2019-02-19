@@ -58,6 +58,7 @@ div
 </style>
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import fn from '@/js/fn.js';
 
 const cache = {};
 
@@ -86,6 +87,7 @@ export default {
     }, 2000);
 
     vm.addDemoLog('v-demo is ready');
+    fn();
   },
   beforeDestroy() {
     clearInterval(cache.changeKey);
