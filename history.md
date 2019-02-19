@@ -1,4 +1,7 @@
 # 版本信息
+## 0.5.5
+* [EDIT] `@bebel/preset-env` 新增 `{ modules: 'commonjs' }` 来兼容老项目
+
 ## 0.5.4
 * [EDIT] 锁定 `webpack` 到 `4.28.4`
 

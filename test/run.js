@@ -117,7 +117,7 @@ const runner = {
     const opzer = seed.optimize(config, CONFIG_DIR);
 
     // 本地服务器
-    await tUtil.server.start(config.alias.destRoot, config.localserver.port);
+    await tUtil.server.start(config.alias.destRoot, config.localserver.port || 5000);
 
     opzer.initServerMiddleWare(tUtil.server.getAppSync(), iEnv);
 
