@@ -1,4 +1,7 @@
 # 版本信息
+## 0.5.6
+* [ADD] 添加`babel-polyfill` 以兼容旧版
+
 ## 0.5.5
 * [EDIT] `@bebel/preset-env` 新增 `{ modules: 'commonjs' }` 来兼容老项目
 
