@@ -1,6 +1,6 @@
 {
   "name": "yyl-seed-webpack-vue2",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "",
   "main": "index.js",
   "engines": {
@@ -59,6 +59,7 @@
     "axios": "^0.18.0",
     "babel-eslint": "^9.0.0",
     "babel-loader": "8.0.5",
+    "babel-polyfill": "^6.26.0",
     "css-loader": "^1.0.0",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^2.0.0",
