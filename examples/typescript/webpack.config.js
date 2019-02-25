@@ -4,7 +4,14 @@ const fs = require('fs');
 const extFs = require('yyl-fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const config = require('./config.js');
+const CONFIG_PATH = path.join(__dirname, 'config.js');
+const CONFIG_PATH2 = path.join(__dirname, 'yyl.config.js');
+let config = {};
+if (fs.existsSync(CONFIG_PATH)) {
+  config = require(CONFIG_PATH);
+} else if (fs.existsSync(CONFIG_PATH2)) {
+  config = require(CONFIG_PATH2);
+}
 
 const wConfig = {
   entry: (() => {
