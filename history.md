@@ -1,4 +1,10 @@
 # 版本信息
+## 0.5.8
+* [ADD] 新增 `example` `typescript`
+
+## 0.5.7
+* [EDIT] 将 vue 降级到 `2.5.22`
+
 ## 0.5.6
 * [ADD] 添加`babel-polyfill` 以兼容旧版
 
