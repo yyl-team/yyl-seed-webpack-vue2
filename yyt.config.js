@@ -6,7 +6,7 @@ module.exports = {
     test_settings: {
       default: {
         globals: {
-          asyncHookTimeout : 60000
+          asyncHookTimeout : 20000
         }
       }
     },

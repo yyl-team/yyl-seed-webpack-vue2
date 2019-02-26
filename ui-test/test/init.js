@@ -15,12 +15,15 @@ module.exports['@disabled'] = !TEST_CTRL.INIT;
 
 tUtil.frag.init(FRAG_PATH);
 
-seed.examples.forEach((type) => {
+seed.examples.forEach((type, index) => {
   module.exports[`test init ${type}`] = function (client) {
-    const pjPath = path.join(FRAG_PATH, type);
+    const pjPath = path.join(FRAG_PATH, `init-${type}`);
     let remoteIndex = '';
 
+    const waitTime = index === 0? 0: 2000;
+
     return client
+      .waitFor(waitTime)
       .perform(async (done) => {
         await tUtil.frag.build();
         await extFs.mkdirSync(pjPath);
