@@ -9,6 +9,9 @@ module.exports = {
           asyncHookTimeout : 60000
         }
       }
+    },
+    __extend: {
+      headless: true
     }
   }
 };
