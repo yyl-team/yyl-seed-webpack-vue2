@@ -7,7 +7,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 // + vars
 const CONFIG_PATH = path.join(__dirname, 'config.js');
-const SRC_ROOT = path.join(__dirname, 'src');
 // - vars
 
 const config = require(CONFIG_PATH);
@@ -16,7 +15,7 @@ const wConfig = {
   entry: (() => {
     const r = {};
     // multi entry
-    const entryPath = path.resolve(SRC_ROOT, 'entry');
+    const entryPath = path.resolve(__dirname, config.alias.srcRoot, 'entry');
 
     if (fs.existsSync(entryPath)) {
       const fileList = extFs.readFilesSync(entryPath, /\.ts$/);
@@ -52,8 +51,8 @@ const wConfig = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(SRC_ROOT, 'entry/index/index.pug'),
-      filename: path.relative(config.alias.jsDest, path.join(config.alias.htmlDest, 'index.html')),
+      template: path.resolve(__dirname, config.alias.srcRoot, 'entry/index/index.pug'),
+      filename: path.relative(path.resolve(__dirname, config.alias.jsDest), path.join(config.alias.htmlDest, 'index.html')),
       chunks: ['index'],
       inlineSource: '.(js|ts|css)\\?__inline$',
       minify: false
@@ -61,3 +60,4 @@ const wConfig = {
   ]
 };
 module.exports = wConfig;
+
