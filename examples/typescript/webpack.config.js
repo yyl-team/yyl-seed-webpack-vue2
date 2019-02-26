@@ -16,7 +16,7 @@ const wConfig = {
   entry: (() => {
     const r = {};
     // multi entry
-    const entryPath = path.join(SRC_ROOT, 'entry');
+    const entryPath = path.resolve(SRC_ROOT, 'entry');
 
     if (fs.existsSync(entryPath)) {
       const fileList = extFs.readFilesSync(entryPath, /\.ts$/);
@@ -52,7 +52,7 @@ const wConfig = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.join(SRC_ROOT, 'entry/index/index.pug'),
+      template: path.resolve(SRC_ROOT, 'entry/index/index.pug'),
       filename: path.relative(config.alias.jsDest, path.join(config.alias.htmlDest, 'index.html')),
       chunks: ['index'],
       inlineSource: '.(js|ts|css)\\?__inline$',

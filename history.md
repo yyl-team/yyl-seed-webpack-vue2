@@ -1,4 +1,7 @@
 # 版本信息
+## 0.5.12
+* [FIX] `init` bugfix
+
 ## 0.5.9
 * [FIX] `init` bugfix
 
