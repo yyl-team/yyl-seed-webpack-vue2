@@ -46,9 +46,10 @@ const runner = {
     // build path
     await extFs.mkdirSync(initPath);
 
+
     // init
     return await util.makeAwait((next) => {
-      seed.init('single-project', initPath)
+      seed.init(iEnv.name, initPath)
         .on('msg', (...argv) => {
           const [type, iArgv] = argv;
           let iType = type;

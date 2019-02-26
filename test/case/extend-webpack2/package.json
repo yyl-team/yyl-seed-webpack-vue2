@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "jsonp": "^0.2.1",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.2.4"
+  },
+  "dependencies": {
+    "yyl-fs": "^0.2.0"
+  }
+}

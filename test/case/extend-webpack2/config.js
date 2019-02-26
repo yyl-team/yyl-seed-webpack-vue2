@@ -31,7 +31,7 @@ Object.assign(config, {
   dest: setting.dest,
   plugins: [],
   px2rem: false,
-  webpackConfigPath: path.join(__dirname, 'webpack.config.js')
+  webpackConfigPath: path.join(__dirname, 'webpack.config.pc.js')
 });
 // - base
 

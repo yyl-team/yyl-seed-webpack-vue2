@@ -1,6 +1,6 @@
 {
   "name": "yyl-seed-webpack-vue2",
-  "version": "0.5.9",
+  "version": "0.5.11",
   "description": "",
   "main": "index.js",
   "engines": {
@@ -23,10 +23,13 @@
     "watch": "node ./test/run.js watch --config ./test/case/demo/config.js",
     "watch-koa": "node ./test/run.js watch --config ./test/case/demo/config.js --platform koa",
     "watch-isCommit": "node ./test/run.js watch --config ./test/case/demo/config.js --isCommit",
-    "watch-case-extend-webpack": "node ./test/run.js watch --config ./test/case/extend-webapck/config.js",
+    "watch-case-extend-webpack": "node ./test/run.js watch --config ./test/case/extend-webpack/config.js",
+    "watch-case-extend-webpack2": "node ./test/run.js watch --config ./test/case/extend-webpack2/config.js",
     "watch-case-webpack": "node ./test/run.js watch --config ./test/case/webpack/config.js",
     "watch-case-env-test": "node ./test/run.js watch --config ./test/case/env-test/config.js --NODE_ENV production",
-    "init": "node ./test/run.js init --path ./test/__frag",
+    "init-single-project": "node ./test/run.js init --name single-project --path ./test/__frag",
+    "init-just-webpack": "node ./test/run.js init --name just-webpack --path ./test/__frag",
+    "init-typescript": "node ./test/run.js init --name typescript --path ./test/__frag",
     "examples": "node ./test/run.js examples",
     "make-page": "node ./test/run.js make --config ./test/case/demo/config.js --name p-maketest",
     "make-widget": "node ./test/run.js make --config ./test/case/demo/config.js --name w-maketest"
@@ -101,7 +104,7 @@
     "yyl-fs": "^0.2.0",
     "yyl-os": "^0.2.0",
     "yyl-seed-response": "^0.1.0",
-    "yyl-util": "^2.0.0"
+    "yyl-util": "^2.2.0"
   },
   "devDependencies": {
     "babel-core": "^7.0.0-bridge.0",

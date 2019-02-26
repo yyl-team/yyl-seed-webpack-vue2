@@ -1,22 +1,23 @@
-/* eslint import/no-dynamic-require: 0 */
 const path = require('path');
 const querystring = require('querystring');
 const fs = require('fs');
 const extFs = require('yyl-fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-// + vars
 const CONFIG_PATH = path.join(__dirname, 'config.js');
-const SRC_ROOT = path.join(__dirname, 'src');
-// - vars
-
-const config = require(CONFIG_PATH);
+const CONFIG_PATH2 = path.join(__dirname, 'yyl.config.js');
+let config = {};
+if (fs.existsSync(CONFIG_PATH)) {
+  config = require(CONFIG_PATH);
+} else if (fs.existsSync(CONFIG_PATH2)) {
+  config = require(CONFIG_PATH2);
+}
 
 const wConfig = {
   entry: (() => {
     const r = {};
     // multi entry
-    const entryPath = path.join(SRC_ROOT, 'entry');
+    const entryPath = path.join(__dirname, './src/entry');
 
     if (fs.existsSync(entryPath)) {
       const fileList = extFs.readFilesSync(entryPath, /\.ts$/);
@@ -52,7 +53,7 @@ const wConfig = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.join(SRC_ROOT, 'entry/index/index.pug'),
+      template: path.join(__dirname, './src/entry/index/index.pug'),
       filename: path.relative(config.alias.jsDest, path.join(config.alias.htmlDest, 'index.html')),
       chunks: ['index'],
       inlineSource: '.(js|ts|css)\\?__inline$',
