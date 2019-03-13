@@ -1,4 +1,7 @@
 # 版本信息
+## 0.5.14
+* [DEL] 去掉 自带的 `yyl-flexlayout` 插件
+
 ## 0.5.13
 * [FIX] `init` bugfix
 
