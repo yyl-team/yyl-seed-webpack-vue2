@@ -27,9 +27,5 @@ export default Vue.extend({
     const vm = this;
     vm.addDemoLog('p-index is ready');
     vm.addDemoLog(`now in ${process.env.NODE_ENV}`);
-
-    jsonp('http://w-ydzx.yy.com/nav/index/idx', {}, (err, data) => {
-      vm.addDemoLog(`get data success ${JSON.stringify(data)}`);
-    });
   }
 });
